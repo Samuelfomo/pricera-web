@@ -8,14 +8,7 @@
         @click="router.push('/home')"
         class="logo-section p-4 flex items-center border-b border-[#87D04C] cursor-pointer"
     >
-<!--      <svg-->
-<!--          v-show="view"-->
-<!--          class="w-8 h-8 text-blue-400 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"-->
-<!--          stroke="#87D04C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">-->
-<!--        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>-->
-<!--        <path d="M12 5l0 14"/>-->
-<!--        <path d="M5 12l14 0"/>-->
-<!--      </svg>-->
+
       <h1 v-show="view" class="text-white font-semibold text-center text-xl">PCA</h1>
       <div class="whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex justify-center items-center w-full">
         <h1 class="text-white font-semibold text-center text-3xl">PRICERA</h1>

@@ -171,8 +171,8 @@ const clearSearch = () => {
 
 // User data
 const user = ref({
-  name: "Marie Dubois",
-  email: "marie.dubois@example.com",
+  name: "Danielle Myrtille",
+  email: "Danymyrtille@gmail.com",
   role: "Administrateur",
   balance: 12850.75,
   expenses: 3420.50,

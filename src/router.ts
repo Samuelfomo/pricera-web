@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from "../src/frontend/home.vue"
 import Lexicon from "../src/frontend/lexicon.vue"
 import FormLexicon from "../src/frontend/formLexicon.vue"
+import moment from "../src/frontend/module.vue"
 
 const routes = [
     {
@@ -19,6 +20,11 @@ const routes = [
         name: 'formLexicon',
         component: FormLexicon
     },
+  {
+    path: '/module',
+    name: 'module',
+    component: Module
+  },
 ]
 
 const router = createRouter({

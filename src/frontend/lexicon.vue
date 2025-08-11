@@ -1,8 +1,8 @@
-<template>
-  <div class="min-h-screen bg-stone-300">
-    <Header />
+ <template>
+  <div class="min-h-screen bg-stone-200">
+    <Header/>
+    <dashboard />
     <!-- Header avec actions -->
-    <header class=" mt-2 shadow-sm sticky top-0 z-30">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           <!-- Titre -->
@@ -14,52 +14,20 @@
 
           <!-- Actions -->
           <div class="flex items-center space-x-4">
-            <!-- Barre de recherche -->
-            <div class="relative max-w-md">
-              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
-              </div>
-              <input
-                  v-model="searchQuery"
-                  type="text"
-                  placeholder="Rechercher une référence..."
-                  class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-xl bg-white/70 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                  @input="handleSearch"
-              >
-              <button
-                  v-if="searchQuery"
-                  @click="clearSearch"
-                  class="absolute inset-y-0 right-0 pr-3 flex items-center"
-              >
-                <svg class="h-4 w-4 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
-              </button>
-            </div>
-
             <!-- Bouton Nouvelle référence -->
             <button
                 @click="openCreateForm"
-                class="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 py-2 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl font-medium"
+                class="flex items-center space-x-2 bg-gradient-to-r from-blue-500 hover:to-purple-700  px-6 py-2 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl font-medium"
             >
               <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
               </svg>
               <span>Nouvelle référence</span>
             </button>
-
-            <!-- Statistiques rapides -->
-            <div class="hidden lg:flex items-center space-x-4 text-sm text-gray-600 bg-white/60 backdrop-blur-sm rounded-xl px-4 py-2">
-              <span class="font-medium">{{ statistics.totalEntries }} entrées</span>
-              <span class="text-gray-300">|</span>
-              <span>{{ statistics.totalTranslations }} traductions</span>
-            </div>
           </div>
         </div>
       </div>
-    </header>
+
 
     <!-- Contenu principal -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -371,6 +339,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import Header from "@/frontend/components/header.vue";
+import Dashboard from '@/frontend/components/dashboard.vue';
 
 // Types
 interface TranslationEntry {
