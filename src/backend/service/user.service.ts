@@ -1,4 +1,4 @@
-import api from '../tools/api.ts';
+import api from '../tools/api';
 
 export default class UserService {
   static async sendEmail(email: string): Promise<any> {

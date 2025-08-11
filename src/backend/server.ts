@@ -1,5 +1,5 @@
 // Point d'entrée principal
-import App from './app.ts'; // Ajout de l'extension .js pour les modules ES
+import App from './app'; // Ajout de l'extension .js pour les modules ES
 
 async function main(): Promise<void> {
   try {

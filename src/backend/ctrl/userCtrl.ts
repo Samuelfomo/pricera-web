@@ -1,8 +1,8 @@
 import { Router, Request, Response } from 'express';
-import R from '../tools/response.ts';
-import HttpStatus from '../tools/https-status.ts';
-import G from '../tools/glossary.ts';
-import UserService from '../service/user.service.ts';
+import R from '../tools/response';
+import HttpStatus from '../tools/https-status';
+import G from '../tools/glossary';
+import UserService from '../service/user.service';
 // import User from '../class/User';
 // import Profile from '../class/Profile';
 

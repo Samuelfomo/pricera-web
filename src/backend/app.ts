@@ -3,15 +3,14 @@ import { Server } from 'http';
 import express from 'express';
 import cors from 'cors';
 
-// Importation des modules simplifiés avec extensions .js
-import Db from './database/db.config.ts';
-import { TableInitializer } from './database/db.initializer.ts';
-import Revision from './tools/revision.ts'
+import Db from './database/db.config';
+import { TableInitializer } from './database/db.initializer';
+import Revision from './tools/revision'
 
-import profileCtrls from "./ctrl/profileCtrl.ts"
-import lexiconCtrl from "./ctrl/lexiqueCtrl.ts"
-import userCtrl from "./ctrl/userCtrl.ts"
-import G from './tools/glossary.ts';
+import profileCtrls from "./ctrl/profileCtrl"
+import lexiconCtrl from "./ctrl/lexiqueCtrl"
+import userCtrl from "./ctrl/userCtrl"
+import G from './tools/glossary';
 
 interface AppConfig {
   port: number;

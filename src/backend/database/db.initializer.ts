@@ -1,10 +1,10 @@
 import { Sequelize, ModelStatic, Model } from 'sequelize';
-import {ModuleDbStructure} from './data/module.db.ts';
-import { ProfileDbStructure } from './data/profile.db.ts';
-import { PermissionDbStructure } from './data/permission.db.ts';
-import { UserDbStructure } from './data/user.db.ts';
-import { LexiconDbStructure } from './data/lexicon.db.ts';
-import CountryDbStructure from './data/country.db.ts';
+import {ModuleDbStructure} from './data/module.db';
+import { ProfileDbStructure } from './data/profile.db';
+import { PermissionDbStructure } from './data/permission.db';
+import { UserDbStructure } from './data/user.db';
+import { LexiconDbStructure } from './data/lexicon.db';
+import CountryDbStructure from './data/country.db';
 /**
  * Gestionnaire STATIQUE d'initialisation des tables
  * Responsabilité unique : Initialiser et donner accès aux modèles

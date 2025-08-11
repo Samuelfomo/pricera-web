@@ -66,7 +66,7 @@ export default defineConfig({
     },
     open: true,
     host: true,
-    port: 5173,
+    port: 5174,
     // Proxy pour le backend en développement
     proxy: {
       '/api': {

@@ -1,4 +1,4 @@
-import api from '../tools/api.ts';
+import api from '../tools/api';
 
 export class CountryService {
 

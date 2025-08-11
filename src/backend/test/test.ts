@@ -1,4 +1,4 @@
-import Profile from '../class/Profile.ts';
+import Profile from '../class/Profile';
 
 export default class Test {
   static async initTest() {

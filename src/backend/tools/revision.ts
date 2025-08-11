@@ -1,4 +1,4 @@
-import BaseModel from '../database/db.base.ts';
+import BaseModel from '../database/db.base';
 
 export default class Revision extends BaseModel {
 

@@ -1,11 +1,23 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from "@/frontend/home.vue"
+import Home from "../src/frontend/home.vue"
+import Lexicon from "../src/frontend/lexicon.vue"
+import FormLexicon from "../src/frontend/formLexicon.vue"
 
 const routes = [
     {
         path: '/',
         name: 'home',
         component: Home
+    },
+    {
+        path: '/lexicon',
+        name: 'lexicon',
+        component: Lexicon
+    },
+    {
+        path: '/lexicon/create',
+        name: 'formLexicon',
+        component: FormLexicon
     },
 ]
 

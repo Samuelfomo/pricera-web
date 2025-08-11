@@ -1,5 +1,5 @@
 import { DataTypes, ModelOptions } from 'sequelize';
-import G from '../../tools/glossary.ts';
+import G from '../../tools/glossary';
 
 export const PermissionDbStructure = {
   tableName: `${G.confTable}permission`,
