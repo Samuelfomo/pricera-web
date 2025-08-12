@@ -14,7 +14,7 @@ const router = Router();
 /**
  * GET / - Exporter tous les pays
  */
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', async (_req: Request, res: Response) => {
   try {
     const exportData = await Country.exportable();
     const result = await CountryService.getAll();
@@ -51,7 +51,7 @@ router.get('/', async (req: Request, res: Response) => {
 // });
 
 
-router.get('/revision', async (req: Request, res: Response) => {
+router.get('/revision', async (_req: Request, res: Response) => {
   try {
     const revision = await Revision.getRevision(`${G.confTable}country`); // Accès à la méthode private
 

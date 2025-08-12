@@ -52,7 +52,7 @@ router.get('/', async (req: Request, res: Response) => {
   }
 });
 
-router.get('/revision', async (req: Request, res: Response) => {
+router.get('/revision', async (_req: Request, res: Response) => {
   try {
     const revision = await Revision.getRevision(`${G.confTable}lexicon`); // Accès à la méthode private
 

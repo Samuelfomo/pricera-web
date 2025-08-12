@@ -2,7 +2,7 @@ import { Sequelize, ModelStatic, Model } from 'sequelize';
 import {ModuleDbStructure} from './data/module.db';
 import { ProfileDbStructure } from './data/profile.db';
 import { PermissionDbStructure } from './data/permission.db';
-import { UserDbStructure } from './data/user.db';
+// import { UserDbStructure } from './data/user.db';
 import { LexiconDbStructure } from './data/lexicon.db';
 import CountryDbStructure from './data/country.db';
 /**
@@ -87,16 +87,16 @@ export class TableInitializer {
     );
     this.models.set(PermissionDbStructure.tableName, model);
   }
-
-  // definition method of model permission
-  private static defineUserModel(): void {
-    const model = this.sequelize.define(
-      UserDbStructure.tableName,
-      UserDbStructure.attributes,
-      UserDbStructure.options,
-    );
-    this.models.set(UserDbStructure.tableName, model);
-  }
+  //
+  // // definition method of model permission
+  // private static defineUserModel(): void {
+  //   const model = this.sequelize.define(
+  //     UserDbStructure.tableName,
+  //     UserDbStructure.attributes,
+  //     UserDbStructure.options,
+  //   );
+  //   this.models.set(UserDbStructure.tableName, model);
+  // }
 
   // definition method of model lexicon
   private static defineLexiqueModel(): void {

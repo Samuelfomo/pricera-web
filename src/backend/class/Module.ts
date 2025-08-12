@@ -104,7 +104,7 @@ export default class Module extends ModuleModel {
   }
 
                          //   chargement d'un module
-  async load(identifier: any, byGuid: boolean, byCode: boolean): Promise<Module | null> {
+  async load(identifier: any, byGuid: boolean, _byCode: boolean): Promise<Module | null> {
     const data = byGuid
       ? await this.findByGuid(identifier)
       : await this.find(Number(identifier));
