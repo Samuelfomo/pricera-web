@@ -52,7 +52,7 @@ router.get('/', async (req: Request, res: Response) => {
   }
 });
 
-router.get('/revision', async (req: Request, res: Response) => {
+router.get('/revision', async (_req: Request, res: Response) => {
   try {
     const revision = await Revision.getRevision(`${G.confTable}lexicon`); // Accès à la méthode private
 
@@ -167,7 +167,7 @@ router.put('/:guid', async (req: Request, res: Response) => {
     if (!lexicon) {
       return R.handleError(res, HttpStatus.INTERNAL_SERVER_ERROR, G.internalError);
     }
-    response.setTranslation(lexicon.translation).setReference(lexicon.reference).setPortable(lexicon.portable).setUpdated(lexicon.updateAt);
+    response.setTranslation(lexicon.translation).setReference(lexicon.reference).setPortable(lexicon.portable).setUpdated(lexicon.updatedAt);
 
     await response.save();
     return R.handleSuccess(res, response.toJSON());
@@ -211,14 +211,14 @@ router.delete('/:guid', async (req: Request, res: Response) => {
 // GET /:guid - Récupérer un lexique par GUID
 router.get('/:guid', async (req: Request, res: Response) => {
   try {
-    const guid = req.params.guid;
-
-    if (!guid) {
+    if (!req.params.guid) {
       return R.handleError(res, HttpStatus.BAD_REQUEST, {
         code: 'missing_guid',
         message: 'GUID parameter is required'
       });
     }
+
+    const guid = parseInt(req.params.guid, 10);
 
     const lexicon = await Lexicon._load(guid, true);
     if (!lexicon) {
@@ -227,7 +227,6 @@ router.get('/:guid', async (req: Request, res: Response) => {
         message: 'Lexicon not found with provided GUID'
       });
     }
-
     return R.handleSuccess(res, lexicon.toJSON());
   } catch (error: any) {
     console.log(error.message);
@@ -308,15 +307,15 @@ router.patch('/:guid', async (req: Request, res: Response) => {
 
 
 
-// // GET /:id - Récupérer un lexique par ID
-// router.get('/:id', async (req, res) => {
+// // GET /:guid - Récupérer un lexique par ID
+// router.get('/:guid', async (req, res) => {
 //   try {
-//     const { id } = req.params;
-//     if (!id || isNaN(Number(id))) {
+//     const { guid } = req.params;
+//     if (!guid || isNaN(Number(guid))) {
 //       return R.handleError(res, HttpStatus.BAD_REQUEST, G.invalidId);
 //     }
 //
-//     const lexique = await Lexicon._load(Number(id));
+//     const lexique = await Lexicon._load(Number(guid));
 //     if (!lexique) {
 //       return R.handleError(res, HttpStatus.NOT_FOUND, {
 //         code: 'lexique_not_found',
@@ -377,15 +376,15 @@ router.patch('/:guid', async (req: Request, res: Response) => {
 //   }
 // });
 
-// // PUT /:id - Modifier un lexique
-// router.put('/:id', async (req, res) => {
+// // PUT /:guid - Modifier un lexique
+// router.put('/:guid', async (req, res) => {
 //   try {
-//     const { id } = req.params;
-//     if (!id || isNaN(Number(id))) {
+//     const { guid } = req.params;
+//     if (!guid || isNaN(Number(guid))) {
 //       return R.handleError(res, HttpStatus.BAD_REQUEST, G.invalidId);
 //     }
 //
-//     const lexique = await Lexicon._load(Number(id));
+//     const lexique = await Lexicon._load(Number(guid));
 //     if (!lexique) {
 //       return R.handleError(res, HttpStatus.NOT_FOUND, {
 //         code: 'lexique_not_found',
@@ -410,15 +409,15 @@ router.patch('/:guid', async (req: Request, res: Response) => {
 //   }
 // });
 //
-// // DELETE /:id - Supprimer un lexique
-// router.delete('/:id', async (req, res) => {
+// // DELETE /:guid - Supprimer un lexique
+// router.delete('/:guid', async (req, res) => {
 //   try {
-//     const { id } = req.params;
-//     if (!id || isNaN(Number(id))) {
+//     const { guid } = req.params;
+//     if (!guid || isNaN(Number(guid))) {
 //       return R.handleError(res, HttpStatus.BAD_REQUEST, G.invalidId);
 //     }
 //
-//     const lexique = await Lexicon._load(Number(id));
+//     const lexique = await Lexicon._load(Number(guid));
 //     if (!lexique) {
 //       return R.handleError(res, HttpStatus.NOT_FOUND, {
 //         code: 'lexique_not_found',
@@ -436,7 +435,7 @@ router.patch('/:guid', async (req: Request, res: Response) => {
 //
 //     return R.handleSuccess(res, {
 //       message: 'Lexicon deleted successfully',
-//       id: lexique.getId(),
+//       guid: lexique.getId(),
 //       name: lexique.getName()
 //     });
 //   } catch (error: any) {

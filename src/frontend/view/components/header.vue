@@ -6,7 +6,7 @@
         <!-- Search Bar - Responsive -->
         <div class="flex-1 max-w-[16rem] mx-4 lg:mx-8">
           <div class="relative">
-            <div class="flex items-center bg-blue-500/90 hover:bg-blue-500 rounded-2xl px-4 py-3 transition-all duration-300 shadow-lg hover:shadow-xl backdrop-blur-sm">
+            <div class="flex items-center bg-[#283a52] hover:bg-[#283a52]-500 rounded-2xl px-4 py-3 transition-all duration-300 shadow-lg hover:shadow-xl backdrop-blur-sm">
               <svg class="h-6 w-5 text-white mr-3 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="11" r="8"/>
                 <path d="m21 21-4.35-4.35"/>

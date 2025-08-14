@@ -10,6 +10,7 @@ const api = axios.create({
     headers: {
         'x-api-key': process.env.API_KEY,
         'x-api-signature': process.env.API_SIGNATURE,
+        'x-api-user': "1d9a29c3-fb54-43f5-bd6f-4f9036302faf"
     },
 });
 

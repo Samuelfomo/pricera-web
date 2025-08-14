@@ -4,6 +4,10 @@ export default class Country extends CountryModel {
   constructor() {
     super();
   }
+  setGuid(guid: number) :Country{
+    this.guid = guid;
+    return this;
+  }
   setCode(code: number): Country {
     this.code = code;
     return this;
@@ -29,7 +33,10 @@ export default class Country extends CountryModel {
     this.flag = flag;
     return this;
   }
-
+  // setUpdated(updated: Date): SectorEntry {
+  //   this.updated = updated;
+  //   return this;
+  // }
 
 
   getId(): number | undefined {
@@ -61,7 +68,7 @@ export default class Country extends CountryModel {
    * Obtient le nom complet avec l'émoji du drapeau
    */
   getDisplayName(): string {
-    const name = this.name || 'Unknown Country';
+    const name = this.name || 'Unknown SectorEntry';
     const flag = this.flag ? ` ${this.flag}` : '';
     return `${name}${flag}`;
   }
@@ -132,22 +139,22 @@ export default class Country extends CountryModel {
   //  * Supprime le pays
   //  */
   // async delete(): Promise<boolean> {
-  //   if (this.id !== undefined) {
-  //     await W.isOccur(!this.id, `${G.identifierMissing.code}: Country Delete`);
-  //     return await this.trash(this.id);
+  //   if (this.guid !== undefined) {
+  //     await W.isOccur(!this.guid, `${G.identifierMissing.code}: SectorEntry Delete`);
+  //     return await this.trash(this.guid);
   //   }
   //   return false;
   // }
 
   /**
-   * Loads a Country object based on the provided identifier and search method.
+   * Loads a SectorEntry object based on the provided identifier and search method.
    *
-   * @param {any} identifier - The identifier used to find the Country object.
+   * @param {any} identifier - The identifier used to find the SectorEntry object.
    *                           Can be a GUID, a code, an ISO, or an ID number.
    * @param {boolean} [byGuid=false] - Specifies if the lookup should be performed by GUID.
    * @param {boolean} [byCode=false] - Specifies if the lookup should be performed by code.
    * @param {boolean} [byIso=false] - Specifies if the lookup should be performed by ISO.
-   * @return {Promise<Country | null>} A promise that resolves to the located Country object, or null if not found.
+   * @return {Promise<Country | null>} A promise that resolves to the located SectorEntry object, or null if not found.
    */
   async load(
     identifier: any,
@@ -184,6 +191,13 @@ export default class Country extends CountryModel {
     if (!dataset) return null;
     return dataset.map((data) => new Country().hydrate(data));
   }
+
+  async trashAll(): Promise<boolean> {
+    const all = await this.listAll();
+    if (all.length === 0) return true;
+    return await this.deleteAll(this.db.tableName);
+  }
+
 
   /**
    * Exports country data with revision information.
@@ -234,7 +248,6 @@ export default class Country extends CountryModel {
    */
   toJSON(): object {
     return {
-      // id: this.id,
       guid: this.guid,
       code: this.code,
       iso: this.iso,
@@ -261,7 +274,7 @@ export default class Country extends CountryModel {
    * @param {boolean} [byGuid=false] - Specifies whether to load by GUID.
    * @param {boolean} [byCode=false] - Specifies whether to load by code.
    * @param {boolean} [byIso=false] - Specifies whether to load by ISO.
-   * @return {Promise<Country | null>} A promise that resolves to the loaded Country instance or null.
+   * @return {Promise<Country | null>} A promise that resolves to the loaded SectorEntry instance or null.
    */
   static _load(
     identifier: any,
@@ -279,6 +292,9 @@ export default class Country extends CountryModel {
     return new Country().list(conditions);
   }
 
+  static async _deleteAll(): Promise<boolean> {
+    return await new Country().trashAll()
+  }
   /**
    * Liste les pays par fuseau horaire
    */
@@ -287,7 +303,7 @@ export default class Country extends CountryModel {
   }
 
   /**
-   * Convertit des données en objet Country
+   * Convertit des données en objet SectorEntry
    */
   static _toObject(data: any): Country {
     return new Country().hydrate(data);

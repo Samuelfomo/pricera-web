@@ -31,9 +31,9 @@
 
 <script setup lang="ts">
 import { ref} from 'vue';
-import Header from "@/frontend/components/header.vue";
-import Footer from "@/frontend/components/footer.vue";
-import Dashboard from "@/frontend/components/dashboard.vue";
+import Header from "@/frontend/view/components/header.vue";
+import Footer from "@/frontend/view/components/footer.vue";
+import Dashboard from "@/frontend/view/components/dashboard.vue";
 
 const isLoading = ref(false);
 

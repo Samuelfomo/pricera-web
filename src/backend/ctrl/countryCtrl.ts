@@ -6,7 +6,6 @@ import HttpStatus from '../tools/https-status';
 import G from '../tools/glossary';
 import { CountryService } from '../service/Country.service';
 import Revision from '../tools/revision';
-
 const router = Router();
 
 // region ROUTES D'EXPORT
@@ -14,44 +13,55 @@ const router = Router();
 /**
  * GET / - Exporter tous les pays
  */
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', async (_req: Request, res: Response) => {
   try {
-    const exportData = await Country.exportable();
-    const result = await CountryService.getAll();
-    if(!result || result.length === 0)
-    R.handleSuccess(res, exportData);
-  } catch (error: any) {
-    console.error('❌ Erreur export pays:', error);
-    R.handleError(res, HttpStatus.INTERNAL_SERVER_ERROR, {
-      code: 'export_failed',
-      message: 'Failed to export countries',
+    const countries = await Country._list();
+    if (!countries || countries.length === 0) {
+
+      const result = await CountryService.getAll();
+      if (!result || result.length === 0) {
+        return R.handleError(res, HttpStatus.NOT_FOUND, {
+          code: 'no_country_found',
+          message: 'No country found'
+        });
+      }
+
+      const drop = await Country._deleteAll();
+      if (!drop) {
+        return R.handleError(res, HttpStatus.INTERNAL_SERVER_ERROR, {
+          code: 'delete_failed',
+          message: 'Failed to delete country'
+        });
+      }
+      // return R.handleSuccess(res, ['deleted successfully', 'saved successfully']);
+      const saved = await Promise.all(result.map(async (entry) => {
+        const instance = new Country()
+          .setGuid(entry.guid)
+          .setCode(entry.code)
+          .setIso(entry.iso)
+          .setName(entry.name)
+          .setFlag(entry.flag)
+          .setTimezone(entry.timezone)
+          .setMobileRegex(entry.mobileRegex)
+          // .setUpdated(entry.updatedAt)
+        await instance.save();
+        return instance;
+      }))
+      return R.handleSuccess(res, await Promise.all(saved.map(entry => entry.toJSON())));
+    }
+
+    return R.handleSuccess(res, {
+      count: countries.length,
+      countries: countries.map((l) => l.toJSON())
     });
+  } catch (error: any) {
+    console.log(error.message);
+    return R.handleError(res, HttpStatus.INTERNAL_SERVER_ERROR, G.internalError);
   }
 });
 
-// /**
-//  * GET /revision - Récupérer uniquement la révision actuelle
-//  */
-// router.get('/revision', async (req: Request, res: Response) => {
-//   try {
-//     const instance = new Country();
-//     const revision = await (instance as any).getRevision(); // Accès à la méthode private
-//
-//     R.handleSuccess(res, {
-//       revision,
-//       checked_at: new Date().toISOString(),
-//     });
-//   } catch (error: any) {
-//     console.error('❌ Erreur récupération révision:', error);
-//     R.handleError(res, HttpStatus.INTERNAL_SERVER_ERROR, {
-//       code: 'revision_check_failed',
-//       message: 'Failed to get current revision',
-//     });
-//   }
-// });
 
-
-router.get('/revision', async (req: Request, res: Response) => {
+router.get('/revision', async (_req: Request, res: Response) => {
   try {
     const revision = await Revision.getRevision(`${G.confTable}country`); // Accès à la méthode private
 
@@ -108,25 +118,30 @@ router.post('/', async (req: Request, res: Response) => {
       if (!code) {
         return R.handleError(res, HttpStatus.BAD_REQUEST, {
           code: 'code_required',
-          message: 'Country code is required',
+          message: 'SectorEntry code is required',
         });
       }
 
       if (!iso) {
         return R.handleError(res, HttpStatus.BAD_REQUEST, {
           code: 'iso_required',
-          message: 'Country ISO code is required',
+          message: 'SectorEntry ISO code is required',
         });
       }
 
       if (!name) {
         return R.handleError(res, HttpStatus.BAD_REQUEST, {
           code: 'name_required',
-          message: 'Country name is required',
+          message: 'SectorEntry name is required',
         });
       }
+      const result = await CountryService.save(req.body);
+      if (!result) {
+        return R.handleError(res, HttpStatus.BAD_REQUEST, {})
+      }
+      const response = result.data.data;
 
-      const country = new Country().setCode(Number(code)).setIso(iso).setName(name);
+      const country = new Country().setCode(Number(code)).setIso(iso).setName(name).setGuid(response.guid);
 
       if (timezone) country.setTimezone(timezone);
       if (mobileRegex) country.setMobileRegex(mobileRegex);
@@ -184,7 +199,7 @@ router.put('/:guid', async (req: Request, res: Response) => {
       if (!country) {
         return R.handleError(res, HttpStatus.NOT_FOUND, {
           code: 'country_not_found',
-          message: 'Country not found',
+          message: 'SectorEntry not found',
         });
       }
 
@@ -246,11 +261,11 @@ router.put('/:guid', async (req: Request, res: Response) => {
 //       const guid = parseInt(req.params.guid);
 //
 //       // Charger par GUID
-//       const country = await Country._load(guid, true);
+//       const country = await SectorEntry._load(guid, true);
 //       if (!country) {
 //         return R.handleError(res, HttpStatus.NOT_FOUND, {
 //           code: 'country_not_found',
-//           message: 'Country not found',
+//           message: 'SectorEntry not found',
 //         });
 //       }
 //
@@ -259,7 +274,7 @@ router.put('/:guid', async (req: Request, res: Response) => {
 //       if (deleted) {
 //         console.log(`✅ Pays supprimé: GUID ${guid} (${country.getIso()} - ${country.getName()})`);
 //         R.handleSuccess(res, {
-//           message: 'Country deleted successfully',
+//           message: 'SectorEntry deleted successfully',
 //           guid: guid,
 //           iso: country.getIso(),
 //           name: country.getName(),

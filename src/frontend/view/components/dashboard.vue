@@ -75,15 +75,15 @@ const menuItems = [
   {label: 'Products', icon: IconShoppingCart, route: '/product', roles: ['MANAGER',]},
   {label: 'Survey', icon: IconCalendarDot, route: '/survey',  roles: ['MANAGER']},
   {label: 'Universe', icon: IconPlanet, route: '/universe', roles: ['PARTNER', 'MANAGER']},
-  {label: 'Sector', icon: IconBuildingFactory2, route: '#', roles: ['PARTNER', 'MANAGER']},
+  {label: 'Sector', icon: IconBuildingFactory2, route: '/sector', roles: ['PARTNER', 'MANAGER']},
   {label: 'Lexicon', icon: IconLanguage, route: '/lexicon', roles: ['PARTNER', 'MANAGER']},
-  {label: 'Country', icon: IconFlag, route: '#', roles: ['PARTNER', 'MANAGER']},
-  {label: 'User', icon: IconUsersGroup, route: '#', roles: ['PARTNER', 'MANAGER']},
+  {label: 'Country', icon: IconFlag, route: '/country', roles: ['PARTNER', 'MANAGER']},
+  {label: 'User', icon: IconUsersGroup, route: '/user', roles: ['PARTNER', 'MANAGER']},
 ];
 
 const configItems = [
   {label: 'Documents', icon: IconClipboardText, route: '#', roles: ['PARTNER', 'MANAGER']},
-  {label: 'Paramètres', icon: IconSettings, route: '#'},
+  {label: 'Paramètres', icon: IconSettings, route: '/module'},
   {label: 'Déconnexion', icon: IconLogout, route: '/'},
 ];
 

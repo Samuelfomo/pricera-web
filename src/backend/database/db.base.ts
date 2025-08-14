@@ -13,7 +13,7 @@ export default abstract class BaseModel {
 
   // Initialiser la connexion (les modèles sont déjà créés par TableInitializer)
   protected async init(): Promise<void> {
-    const Db = (await import('./db.config.ts')).default;
+    const Db = (await import('./db.config')).default;
     this.sequelize = await Db.getInstance();
   }
 
@@ -107,7 +107,7 @@ export default abstract class BaseModel {
   }
 
   /**
-   * Génère un GUID basé sur MAX (id) + offset
+   * Génère un GUID basé sur MAX (guid) + offset
    */
   protected async guidGenerator(tableName: string, length: number = 6): Promise<number | null> {
     try {
@@ -204,7 +204,7 @@ export default abstract class BaseModel {
       }
 
       // Obtenir l'instance Sequelize directement
-      const Db = (await import('./db.config.ts')).default;
+      const Db = (await import('./db.config')).default;
       const sequelize = await Db.getInstance();
 
       // Utiliser gen_random_uuid() de PostgreSQL
@@ -230,7 +230,7 @@ export default abstract class BaseModel {
       try {
         console.log(`🔄 Tentative avec uuid_generate_v4() pour '${tableName}'...`);
 
-        const Db = (await import('./db.config.ts')).default;
+        const Db = (await import('./db.config')).default;
         const sequelize = await Db.getInstance();
 
         const fallbackQuery = 'SELECT uuid_generate_v4()::text as uuid';

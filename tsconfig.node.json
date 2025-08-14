@@ -22,13 +22,50 @@
 //  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
 //}
 
+//{
+//  "compilerOptions": {
+//    "target": "ES2022",
+//    "module": "ESNext",
+////    "moduleResolution": "Node",
+//    "moduleResolution": "bundler",
+//    "esModuleInterop": true,
+//    "allowSyntheticDefaultImports": true,
+////    "allowImportingTsExtensions": true,
+////    "noEmit": false,
+//    "strict": true,
+//    "skipLibCheck": true,
+//    "forceConsistentCasingInFileNames": true,
+//    "resolveJsonModule": true,
+//    "outDir": "./dist/backend",
+//    "rootDir": "./src/backend",
+//    "baseUrl": ".",
+//    "paths": {
+//      "@/*": ["src/*"]
+//    },
+//    "types": ["node"],
+//    "noUnusedLocals": true,
+//    "noUnusedParameters": true,
+//    "noFallthroughCasesInSwitch": true
+//  },
+//  "include": [
+//    "src/backend/**/*",
+//    "src/shared/**/*"
+//  ],
+//  "exclude": [
+//    "node_modules",
+//    "dist",
+//    "src/frontend"
+//  ]
+//}
+
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "Node",
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "allowImportingTsExtensions": false,
     "strict": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
@@ -54,3 +91,4 @@
     "src/frontend"
   ]
 }
+

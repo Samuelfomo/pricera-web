@@ -7,7 +7,7 @@
 //   namespace Express {
 //     interface Request {
 //       user?: {
-//         id: number;
+//         guid: number;
 //         email: string;
 //         permissions: string[];
 //         roles: string[];
@@ -135,7 +135,7 @@
 //     // Simulation - dans un vrai projet, utilisez une librairie comme jsonwebtoken
 //     if (token === 'valid-token') {
 //       return {
-//         id: 1,
+//         guid: 1,
 //         email: 'admin@example.com',
 //         permissions: ['postModule', 'editModule', 'deleteModule'],
 //         roles: ['admin', 'user']
@@ -144,7 +144,7 @@
 //
 //     if (token === 'user-token') {
 //       return {
-//         id: 2,
+//         guid: 2,
 //         email: 'user@example.com',
 //         permissions: ['postModule'],
 //         roles: ['user']
@@ -179,7 +179,7 @@
 //    * Vérifie si l'utilisateur actuel est propriétaire d'une ressource
 //    */
 //   static isOwner(req: Request, resourceUserId: number): boolean {
-//     return req.user?.id === resourceUserId;
+//     return req.user?.guid === resourceUserId;
 //   }
 //
 //   /**

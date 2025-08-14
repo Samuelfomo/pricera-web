@@ -26,7 +26,7 @@ export const CountryDbStructure = {
     },
     iso: {
       type: DataTypes.STRING(2),
-      allowNull: false,
+      allowNull: true,
       unique: { name: 'unique_country_iso', msg: 'The country ISO must be unique' },
       comment: 'ISO 3166-1 alpha-2 code (2 capital letters, e.g. CM)',
     },
@@ -50,12 +50,18 @@ export const CountryDbStructure = {
       allowNull: true,
       comment: 'flag emoji (e.g. 🇨🇲)',
     },
+    updated: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: new Date(),
+      comment: 'Updated',
+    }
   } as ModelAttributes,
 
   options: {
     tableName: `${G.confTable}country`,
     timestamps: true,
-    comment: 'Country table with geographical and validation information',
+    comment: 'SectorEntry table with geographical and validation information',
     indexes: [
       {
         unique: true,

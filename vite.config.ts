@@ -30,8 +30,8 @@
 //   build: {
 //     rollupOptions: {
 //       output: {
-//         manualChunks(id) {
-//           if (id.includes('node_modules')) {
+//         manualChunks(guid) {
+//           if (guid.includes('node_modules')) {
 //             return 'vendor';
 //           }
 //         }

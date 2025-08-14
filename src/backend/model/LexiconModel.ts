@@ -64,6 +64,7 @@ export default class LexiconModel extends BaseModel {
     if (this.translation !== undefined) updateData[this.db.translation] = this.translation;
     if (this.reference !== undefined) updateData[this.db.reference] = this.reference;
     if (this.portable !== undefined) updateData[this.db.portable] = this.portable;
+    if (this.updated !== undefined) updateData[this.db.updated] = this.updated;
 
     const affected = await this.updateOne(this.db.tableName, updateData, { [this.db.id]: this.id });
     if (!affected) throw new Error("Échec de la mise à jour du lexique");

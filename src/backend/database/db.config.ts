@@ -12,7 +12,9 @@ export default class Db {
   // Obtenir la connexion DB
   public static async getInstance(): Promise<Sequelize> {
     if (!Db.instance) {
-      console.log('🔌 Connexion à la base de données...');
+      console.log('🔌 Connexion à la base de données...', process.env.DB_NAME!,
+          process.env.DB_USERNAME!,
+          process.env.DB_PASSWORD!,);
 
       Db.instance = new Sequelize(
         process.env.DB_NAME!,

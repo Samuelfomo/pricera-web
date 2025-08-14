@@ -2,9 +2,11 @@ import { Sequelize, ModelStatic, Model } from 'sequelize';
 import {ModuleDbStructure} from './data/module.db';
 import { ProfileDbStructure } from './data/profile.db';
 import { PermissionDbStructure } from './data/permission.db';
-import { UserDbStructure } from './data/user.db';
+// import { UserDbStructure } from './data/user.db';
 import { LexiconDbStructure } from './data/lexicon.db';
 import CountryDbStructure from './data/country.db';
+import { SectorDbStructure } from './data/sector.db';
+import { UniverseDbStructure } from './data/universe.db';
 /**
  * Gestionnaire STATIQUE d'initialisation des tables
  * Responsabilité unique : Initialiser et donner accès aux modèles
@@ -55,6 +57,8 @@ export class TableInitializer {
     // this.defineUserModel();
     this.defineLexiqueModel();
     this.defineCountryModel();
+    this.defineSectorModel();
+    this.defineUniverseModel();
     console.log(`✅ ${this.models.size} modèle(s) défini(s)`);
   }
   // definition method of model module
@@ -87,16 +91,16 @@ export class TableInitializer {
     );
     this.models.set(PermissionDbStructure.tableName, model);
   }
-
-  // definition method of model permission
-  private static defineUserModel(): void {
-    const model = this.sequelize.define(
-      UserDbStructure.tableName,
-      UserDbStructure.attributes,
-      UserDbStructure.options,
-    );
-    this.models.set(UserDbStructure.tableName, model);
-  }
+  //
+  // // definition method of model permission
+  // private static defineUserModel(): void {
+  //   const model = this.sequelize.define(
+  //     UserDbStructure.tableName,
+  //     UserDbStructure.attributes,
+  //     UserDbStructure.options,
+  //   );
+  //   this.models.set(UserDbStructure.tableName, model);
+  // }
 
   // definition method of model lexicon
   private static defineLexiqueModel(): void {
@@ -116,6 +120,23 @@ export class TableInitializer {
       CountryDbStructure.options,
     );
     this.models.set(CountryDbStructure.tableName, model);
+  }
+
+  private static defineSectorModel(): void {
+    const model =this.sequelize.define(
+      SectorDbStructure.tableName,
+      SectorDbStructure.attributes,
+      SectorDbStructure.options,
+    );
+    this.models.set(SectorDbStructure.tableName, model);
+  }
+  private static defineUniverseModel(): void {
+    const model =this.sequelize.define(
+      UniverseDbStructure.tableName,
+      UniverseDbStructure.attributes,
+      UniverseDbStructure.options,
+    );
+    this.models.set(UniverseDbStructure.tableName, model);
   }
 
   /**

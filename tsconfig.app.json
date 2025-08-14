@@ -23,7 +23,8 @@
   "include": [
     "src/frontend/**/*.ts",
     "src/frontend/**/*.tsx",
-    "src/frontend/**/*.vue"
+    "src/frontend/**/*.vue",
+    "src/frontend/env.d.ts"
   ],
   "exclude": [
     "src/backend/**/*",
