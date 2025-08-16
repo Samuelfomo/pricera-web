@@ -2,23 +2,17 @@
 export default class Country {
 
   static async getAll() {
-    console.log(`URL appelée : ${import.meta.env.VITE_API_URL}:${import.meta.env.VITE_API_PORT}`);
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}:${import.meta.env.VITE_API_PORT}/country`, {
         method: "GET"
       });
 
-      // Vérifie que la réponse est bien JSON
-      if (!response.ok) {
-        throw new Error(`Erreur API : ${response.status}`);
-      }
-
       const data = await response.json();
-      console.log('Données de l\'API :', data.response.countries);
+
 
       return data.response.countries;
     } catch (error) {
-      console.log('Erreur dans SectorEntry.getAll:', error);
+      console.log('Erreur dans CountryEntry.getAll:', error);
       throw error;
     }
   }

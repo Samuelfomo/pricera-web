@@ -113,7 +113,7 @@ export default class CountryModel extends BaseModel {
   protected async update(): Promise<void> {
 
     if (!this.id) {
-      throw new Error('SectorEntry ID is required for update');
+      throw new Error('UniverseEntry ID is required for update');
     }
 
     const updateData: Record<string, any> = {};
@@ -154,17 +154,17 @@ export default class CountryModel extends BaseModel {
   // private async validate(): Promise<void> {
   //   // Valider le code numérique
   //   if (this.code === undefined || !CountryDbStructure.validation.validateCode(this.code)) {
-  //     throw new Error('SectorEntry code must be a positive integer between 1 and 999');
+  //     throw new Error('UniverseEntry code must be a positive integer between 1 and 999');
   //   }
   //
   //   // Valider le code ISO
   //   if (!this.iso || !CountryDbStructure.validation.validateIso(this.iso)) {
-  //     throw new Error('SectorEntry ISO must be exactly 2 uppercase letters (ISO 3166-1 alpha-2)');
+  //     throw new Error('UniverseEntry ISO must be exactly 2 uppercase letters (ISO 3166-1 alpha-2)');
   //   }
   //
   //   // Valider le nom
   //   if (!this.name || !CountryDbStructure.validation.validateName(this.name)) {
-  //     throw new Error('SectorEntry name must be between 2 and 128 characters');
+  //     throw new Error('UniverseEntry name must be between 2 and 128 characters');
   //   }
   //
   //   // Valider le fuseau horaire (optionnel)

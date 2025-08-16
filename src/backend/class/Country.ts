@@ -33,7 +33,7 @@ export default class Country extends CountryModel {
     this.flag = flag;
     return this;
   }
-  // setUpdated(updated: Date): SectorEntry {
+  // setUpdated(updated: Date): UniverseEntry {
   //   this.updated = updated;
   //   return this;
   // }
@@ -68,7 +68,7 @@ export default class Country extends CountryModel {
    * Obtient le nom complet avec l'émoji du drapeau
    */
   getDisplayName(): string {
-    const name = this.name || 'Unknown SectorEntry';
+    const name = this.name || 'Unknown UniverseEntry';
     const flag = this.flag ? ` ${this.flag}` : '';
     return `${name}${flag}`;
   }
@@ -140,21 +140,21 @@ export default class Country extends CountryModel {
   //  */
   // async delete(): Promise<boolean> {
   //   if (this.guid !== undefined) {
-  //     await W.isOccur(!this.guid, `${G.identifierMissing.code}: SectorEntry Delete`);
+  //     await W.isOccur(!this.guid, `${G.identifierMissing.code}: UniverseEntry Delete`);
   //     return await this.trash(this.guid);
   //   }
   //   return false;
   // }
 
   /**
-   * Loads a SectorEntry object based on the provided identifier and search method.
+   * Loads a UniverseEntry object based on the provided identifier and search method.
    *
-   * @param {any} identifier - The identifier used to find the SectorEntry object.
+   * @param {any} identifier - The identifier used to find the UniverseEntry object.
    *                           Can be a GUID, a code, an ISO, or an ID number.
    * @param {boolean} [byGuid=false] - Specifies if the lookup should be performed by GUID.
    * @param {boolean} [byCode=false] - Specifies if the lookup should be performed by code.
    * @param {boolean} [byIso=false] - Specifies if the lookup should be performed by ISO.
-   * @return {Promise<Country | null>} A promise that resolves to the located SectorEntry object, or null if not found.
+   * @return {Promise<Country | null>} A promise that resolves to the located UniverseEntry object, or null if not found.
    */
   async load(
     identifier: any,
@@ -274,7 +274,7 @@ export default class Country extends CountryModel {
    * @param {boolean} [byGuid=false] - Specifies whether to load by GUID.
    * @param {boolean} [byCode=false] - Specifies whether to load by code.
    * @param {boolean} [byIso=false] - Specifies whether to load by ISO.
-   * @return {Promise<Country | null>} A promise that resolves to the loaded SectorEntry instance or null.
+   * @return {Promise<Country | null>} A promise that resolves to the loaded UniverseEntry instance or null.
    */
   static _load(
     identifier: any,
@@ -303,7 +303,7 @@ export default class Country extends CountryModel {
   }
 
   /**
-   * Convertit des données en objet SectorEntry
+   * Convertit des données en objet UniverseEntry
    */
   static _toObject(data: any): Country {
     return new Country().hydrate(data);

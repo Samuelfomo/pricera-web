@@ -118,21 +118,21 @@ router.post('/', async (req: Request, res: Response) => {
       if (!code) {
         return R.handleError(res, HttpStatus.BAD_REQUEST, {
           code: 'code_required',
-          message: 'SectorEntry code is required',
+          message: 'UniverseEntry code is required',
         });
       }
 
       if (!iso) {
         return R.handleError(res, HttpStatus.BAD_REQUEST, {
           code: 'iso_required',
-          message: 'SectorEntry ISO code is required',
+          message: 'UniverseEntry ISO code is required',
         });
       }
 
       if (!name) {
         return R.handleError(res, HttpStatus.BAD_REQUEST, {
           code: 'name_required',
-          message: 'SectorEntry name is required',
+          message: 'UniverseEntry name is required',
         });
       }
       const result = await CountryService.save(req.body);
@@ -199,7 +199,7 @@ router.put('/:guid', async (req: Request, res: Response) => {
       if (!country) {
         return R.handleError(res, HttpStatus.NOT_FOUND, {
           code: 'country_not_found',
-          message: 'SectorEntry not found',
+          message: 'UniverseEntry not found',
         });
       }
 
@@ -261,11 +261,11 @@ router.put('/:guid', async (req: Request, res: Response) => {
 //       const guid = parseInt(req.params.guid);
 //
 //       // Charger par GUID
-//       const country = await SectorEntry._load(guid, true);
+//       const country = await UniverseEntry._load(guid, true);
 //       if (!country) {
 //         return R.handleError(res, HttpStatus.NOT_FOUND, {
 //           code: 'country_not_found',
-//           message: 'SectorEntry not found',
+//           message: 'UniverseEntry not found',
 //         });
 //       }
 //
@@ -274,7 +274,7 @@ router.put('/:guid', async (req: Request, res: Response) => {
 //       if (deleted) {
 //         console.log(`✅ Pays supprimé: GUID ${guid} (${country.getIso()} - ${country.getName()})`);
 //         R.handleSuccess(res, {
-//           message: 'SectorEntry deleted successfully',
+//           message: 'UniverseEntry deleted successfully',
 //           guid: guid,
 //           iso: country.getIso(),
 //           name: country.getName(),

@@ -9,9 +9,9 @@
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div>
             <h1 class="text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
-              Gestion des pays
+              Gestion des surveys
             </h1>
-            <p class="text-slate-600 mt-2">{{ filteredSectors.length }} pays {{ searchTerm ? 'trouvés' : 'au total' }}</p>
+            <p class="text-slate-600 mt-2">{{ filteredSectors.length }} survey {{ searchTerm ? 'trouvés' : 'au total' }}</p>
           </div>
 
           <!-- Actions principales -->
@@ -26,7 +26,7 @@
               <input
                 v-model="searchTerm"
                 type="text"
-                placeholder="Rechercher un pays..."
+                placeholder="Rechercher un survey..."
                 class="pl-10 pr-4 py-3 w-full sm:w-80 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm transition-all"
               >
             </div>
@@ -40,7 +40,7 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
-                Ajouter un pays
+                Ajouter un survey
               </button>
 
               <button
@@ -77,13 +77,13 @@
         </div>
       </div>
 
-      <!-- Table des pays -->
+      <!-- Table des surveys -->
       <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200">
         <!-- Indicateur de chargement -->
         <div v-if="isLoading" class="flex justify-center items-center py-20">
           <div class="flex flex-col items-center">
             <div class="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 border-t-blue-600"></div>
-            <p class="mt-4 text-slate-600 font-medium">Chargement des pays...</p>
+            <p class="mt-4 text-slate-600 font-medium">Chargement des surveys...</p>
           </div>
         </div>
 
@@ -128,8 +128,8 @@
             </thead>
             <tbody class="bg-white divide-y divide-slate-100">
             <tr
-              v-for="(country, index) in paginatedCountries"
-              :key="country.id"
+              v-for="(survey, index) in paginatedSectors"
+              :key="survey.id"
               class="hover:bg-slate-50 transition-colors"
               :class="{ 'bg-slate-25': index % 2 === 1 }"
             >
@@ -137,30 +137,30 @@
                 <div class="flex items-center">
 
                   <div class="ml-4">
-                    <div class="text-sm font-bold text-slate-900">{{ sector.name }}</div>
+                    <div class="text-sm font-bold text-slate-900">{{ survey.name }}</div>
                   </div>
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                   <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    {{ sector.description }}
+                    {{ survey.description }}
                   </span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right">
                 <div class="flex justify-end space-x-2">
                   <button
-                    @click="openEditModal(country)"
+                    @click="openEditModal(survey)"
                     class="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-all transform hover:scale-110"
-                    title="Modifier le pays"
+                    title="Modifier le survey"
                   >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                     </svg>
                   </button>
                   <button
-                    @click="confirmDeleteSector(country)"
+                    @click="confirmDeleteSector(survey)"
                     class="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-all transform hover:scale-110"
-                    title="Supprimer le pays"
+                    title="Supprimer le survey"
                   >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -178,16 +178,17 @@
           <svg class="mx-auto h-16 w-16 text-slate-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
           </svg>
-          <h3 class="text-xl font-semibold text-slate-900 mb-2">Aucun pays trouvé</h3>
+          <h3 class="text-xl font-semibold text-slate-900 mb-2">Aucun survey trouvé</h3>
           <p class="text-slate-500 mb-6">
-            {{ searchTerm ? 'Aucun pays ne correspond à votre recherche.' : 'Commencez par ajouter votre premier pays.' }}
+            {{ searchTerm ? 'Aucun survey' +
+            ' ne correspond à votre recherche.' : 'Commencez par ajouter votre premier survey.' }}
           </p>
           <button
             v-if="!searchTerm"
             @click="openAddModal"
             class="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all transform hover:scale-105 shadow-lg"
           >
-            Ajouter le premier pays
+            Ajouter le premier survey
           </button>
         </div>
 
@@ -218,7 +219,7 @@
                   class="px-3 py-2 text-sm border border-slate-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
                   title="Première page"
                 >
-                  «
+
                 </button>
                 <button
                   @click="currentPage--"
@@ -261,7 +262,7 @@
           <!-- En-tête du modal -->
           <div class="flex items-center justify-between mb-6">
             <h2 class="text-2xl font-bold text-slate-900">
-              {{ isEditMode ? 'Modifier le secteur' : 'Ajouter un nouveau secteur' }}
+              {{ isEditMode ? 'Modifier le survey' : 'Ajouter un nouveau survey' }}
             </h2>
             <button
               @click="closeModal"
@@ -276,31 +277,32 @@
           <!-- Formulaire -->
           <form @submit.prevent="saveSector" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- Nom du pays -->
+              <!-- Nom du survey -->
               <div class="md:col-span-2">
                 <label class="block text-sm font-semibold text-slate-700 mb-2">
-                  Nom du pays <span class="text-red-500">*</span>
+                  produit<span class="text-red-500">*</span>
                 </label>
                 <input
                   v-model="formData.name"
                   type="text"
                   required
                   class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                  placeholder="Ex: France"
+                  placeholder="Stylo a encre bleu"
                 >
               </div>
 
               <!-- description -->
               <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">
-                  Description <span class="text-red-500">*</span>
+                  account <span class="text-red-500">*</span>
                 </label>
                 <input
                   v-model="formData.description"
                   type="text"
                   required
                   class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                  placeholder="Ex: Europe/Paris"
+                  placeholder="Medicament pour enfant et adulte
+"
                 >
               </div>
             </div>
@@ -341,7 +343,7 @@
 
           <h3 class="text-lg font-bold text-slate-900 text-center mb-2">Confirmer la suppression</h3>
           <p class="text-slate-600 text-center mb-6">
-            Êtes-vous sûr de vouloir supprimer le pays <strong>{{ sectorToDelete?.name }}</strong> ?
+            Êtes-vous sûr de vouloir supprimer le survey <strong>{{ sectorToDelete?.name }}</strong> ?
             Cette action est irréversible.
           </p>
 
@@ -373,12 +375,12 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import Header from '@/frontend/view/components/header.vue';
 import Dashboard from '@/frontend/view/components/dashboard.vue';
-import Country from '@/frontend/service/country.service.ts'
 
 // Interface pour les pays
 interface SectorEntry {
   id: string;
   name: string;
+  active: boolean;
   description: string;
 }
 
@@ -404,16 +406,19 @@ const sectorToDelete = ref<SectorEntry | null>(null);
 // Données du formulaire
 const formData = ref<Partial<SectorEntry>>({
   name: '',
+  active: false,
   description: '',
 });
 
 // Colonnes du tableau
 const columns = [
-  { key: 'name' as keyof SectorEntry, label: 'Nom du secteur' },
+  { key: 'name' as keyof SectorEntry, label: 'Nom du survey' },
   { key: 'description' as keyof SectorEntry, label: 'Description' },
+  { key: 'active' as keyof SectorEntry, label: 'Actif' },
+
 ];
 
-// Fonction pour charger les secteur
+// Fonction pour charger les pays
 const loadSectors = async () => {
   try {
     isLoading.value = true;
@@ -421,8 +426,7 @@ const loadSectors = async () => {
     successMessage.value = null;
 
     // Appel au contrôleur pour charger les données
-    const result = await SectorService.getAll();
-    sectors.value = result ?? []; // si null, on met []
+    sectors.value = await fetchSectorsData();
 
   } catch (error) {
     console.error('Erreur lors du chargement:', error);
@@ -430,7 +434,7 @@ const loadSectors = async () => {
   } finally {
     isLoading.value = false;
   }
-};
+};;
 
 // Notifications
 const notification = ref({
@@ -439,6 +443,10 @@ const notification = ref({
   detail: '',
   type: 'info' as 'success' | 'error' | 'warning' | 'info',
 });
+
+const paginatedSectors = computed(() =>
+  filteredSectors.value.slice(startIndex.value, endIndex.value)
+);
 
 // Gestion des messages
 const clearMessages = () => {
@@ -495,9 +503,7 @@ const endIndex = computed(() =>
   startIndex.value + itemsPerPage.value
 );
 
-const paginatedCountries = computed(() =>
-  filteredSectors.value.slice(startIndex.value, endIndex.value)
-);
+
 
 // Watchers
 watch(filteredSectors, () => {
@@ -529,9 +535,9 @@ const openAddModal = () => {
   clearMessages();
 };
 
-const openEditModal = (sector: SectorEntry) => {
+const openEditModal = (universe: SectorEntry) => {
   isEditMode.value = true;
-  formData.value = { ...sector };
+  formData.value = { ...universe };
   showModal.value = true;
   clearMessages();
 };
@@ -565,22 +571,22 @@ const closeModal = () => {
 // Validation du formulaire
 const validateForm = (): string | null => {
   if (!formData.value.name?.trim()) {
-    return 'Le nom du secteur est obligatoire';
+    return 'Le nom du survey est obligatoire';
   }
   if (!formData.value.description?.trim()) {
     return 'Le description  est obligatoire';
   }
 
   // Vérifier les doublons (sauf pour le pays en cours d'édition)
-  const existingSectors = sectors.value.find(sector =>
-      sector.id !== formData.value.id && (
-        sector.name.toLowerCase() === formData.value.name?.toLowerCase() ||
-        sector.description.toLowerCase() === formData.value.description?.toLowerCase()
+  const existingSectors = sectors.value.find(universe =>
+      universe.id !== formData.value.id && (
+        universe.name.toLowerCase() === formData.value.name?.toLowerCase() ||
+        universe.description.toLowerCase() === formData.value.description?.toLowerCase()
       )
   );
 
   if (existingSectors) {
-    return 'Un secteur avec ce nom, description existe déjà';
+    return 'Un survey avec ce nom, description existe déjà';
   }
 
   return null;
@@ -603,23 +609,23 @@ const saveSector = async () => {
       const index = sectors.value.findIndex(c => c.id === formData.value.id);
       if (index !== -1) {
         sectors.value[index] = { ...formData.value } as SectorEntry;
-        successMessage.value = `Le secteur "${formData.value.name}" a été modifié avec succès`;
+        successMessage.value = `Le survey "${formData.value.name}" a été modifié avec succès`;
       }
     } else {
       // Ajout
       try {
         isSaving.value = true;
 
-        const response = await Country.save(formData.value);
+        const response = await SectorService.save(formData.value);
 
         if (response.status === 201) {
           const createSector: SectorEntry = await response.response; // <-- dépend de ton contrôleur
           sectors.value.unshift(createSector);
 
-          successMessage.value = `Le secteur "${createSector.name}" a été ajouté avec succès`;
-          showNotification(`Le secteur "${createSector.name}" a été ajouté avec succès`);
+          successMessage.value = `Le survey "${createSector.name}" a été ajouté avec succès`;
+          showNotification(`Le survey "${createSector.name}" a été ajouté avec succès`);
         } else {
-          loadError.value = "Erreur lors de la création du secteur";
+          loadError.value = "Erreur lors de la création du survey";
         }
 
         closeModal();
@@ -635,8 +641,8 @@ const saveSector = async () => {
 }
 
 // Gestion de la suppression
-const confirmDeleteSector = (sector: SectorEntry) => {
-  sectorToDelete.value = sector;
+const confirmDeleteSector = (universe: SectorEntry) => {
+  sectorToDelete.value = universe;
   showDeleteModal.value = true;
   clearMessages();
 };
@@ -656,10 +662,10 @@ const deleteSector = async () => {
     if (index !== -1) {
       const deletedSectorName = sectors.value[index].name;
       sectors.value.splice(index, 1);
-      successMessage.value = `Le secteur "${deletedSectorName}" a été supprimé avec succès`;
+      successMessage.value = `Le survey "${deletedSectorName}" a été supprimé avec succès`;
 
       // Ajuster la pagination si nécessaire
-      if (paginateDSectors.value.length === 0 && currentPage.value > 1) {
+      if (paginatedSectors.value.length === 0 && currentPage.value > 1) {
         currentPage.value--;
       }
     }
@@ -706,7 +712,7 @@ onMounted(() => {
 // Nettoyage
 import { onUnmounted } from 'vue';
 import SectorService from '@/frontend/service/sector.service.ts';
-import sector from '@/frontend/view/sector/sector.vue';
+import { fetchSectorsData } from '@/frontend/Ctr/sector.ts';
 
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown);

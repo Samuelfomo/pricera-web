@@ -41,10 +41,6 @@ export default class Permission extends PermissionModel {
     return this.guid;
   }
 
-  getCode(): number | undefined {
-    return this.code;
-  }
-
   getName(): string | undefined {
     return this.name;
   }
@@ -52,6 +48,13 @@ export default class Permission extends PermissionModel {
   getDescription(): string | undefined {
     return this.description;
   }
+
+  getCode(): number | undefined {
+    return this.code;
+  }
+
+
+
 
   getModule(): number | undefined {
     return this.module;

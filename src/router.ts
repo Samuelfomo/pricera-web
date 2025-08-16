@@ -3,9 +3,10 @@ import Home from "./frontend/view/home.vue"
 import Lexicon from "./frontend/view/lexicon/lexicon.vue"
 import FormLexicon from "./frontend/view/lexicon/formLexicon.vue"
 import Module from "./frontend/view/module.vue"
-import Country from './frontend/view/country/country.vue';
-import User from './frontend/view/user/user.vue'
-import Sector from './frontend/view/sector/sector.vue';
+import Country from './frontend/view/country.vue';
+import User from './frontend/view/user.vue'
+import Sector from './frontend/view/sector.vue';
+import Universe from './frontend/view/universe.vue';
 const routes = [
     {
         path: '/',
@@ -51,6 +52,11 @@ const routes = [
       path: '/sector',
       name: 'sector',
       component: Sector
+    },
+    {
+      path: '/universe',
+      name: 'universe',
+      component: Universe
     }
 ]
 

@@ -102,10 +102,10 @@ export const UniverseDbStructure = {
     /**
      * Valide le tableau des secteurs
      */
-    validateSectors: (sectors: number[]): boolean => {
+    validateSectors: (sectors: object[]): boolean => {
       if (!Array.isArray(sectors)) return false;
       if (sectors.length === 0) return false; // Au moins un secteur requis
-      return sectors.every((id) => Number.isInteger(id) && id > 0);
+      return sectors.every((id) => Number.isInteger(id));
     },
 
     /**

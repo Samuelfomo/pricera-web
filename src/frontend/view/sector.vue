@@ -9,9 +9,9 @@
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div>
             <h1 class="text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
-              Gestion des pays
+              Gestion des secteurs
             </h1>
-            <p class="text-slate-600 mt-2">{{ filteredCountries.length }} pays {{ searchTerm ? 'trouvés' : 'au total' }}</p>
+            <p class="text-slate-600 mt-2">{{ filteredSectors.length }} secteur {{ searchTerm ? 'trouvés' : 'au total' }}</p>
           </div>
 
           <!-- Actions principales -->
@@ -26,7 +26,7 @@
               <input
                 v-model="searchTerm"
                 type="text"
-                placeholder="Rechercher un pays..."
+                placeholder="Rechercher un secteur..."
                 class="pl-10 pr-4 py-3 w-full sm:w-80 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm transition-all"
               >
             </div>
@@ -40,11 +40,11 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
-                Ajouter un pays
+                Ajouter un secteur
               </button>
 
               <button
-                @click="loadCountries"
+                @click="loadSectors"
                 :disabled="isLoading"
                 class="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg flex items-center gap-2"
               >
@@ -77,18 +77,18 @@
         </div>
       </div>
 
-      <!-- Table des pays -->
+      <!-- Table des secteurs -->
       <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200">
         <!-- Indicateur de chargement -->
         <div v-if="isLoading" class="flex justify-center items-center py-20">
           <div class="flex flex-col items-center">
             <div class="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 border-t-blue-600"></div>
-            <p class="mt-4 text-slate-600 font-medium">Chargement des pays...</p>
+            <p class="mt-4 text-slate-600 font-medium">Chargement des secteurs...</p>
           </div>
         </div>
 
         <!-- Table -->
-        <div v-else-if="filteredCountries.length > 0" class="overflow-x-auto">
+        <div v-else-if="filteredSectors.length > 0" class="overflow-x-auto">
           <table class="min-w-full divide-y divide-slate-200">
             <thead class="bg-gradient-to-r from-slate-50 to-slate-100">
             <tr>
@@ -128,60 +128,39 @@
             </thead>
             <tbody class="bg-white divide-y divide-slate-100">
             <tr
-              v-for="(country, index) in paginatedCountries"
-              :key="country.id"
+              v-for="(secteur, index) in paginatedSectors"
+              :key="secteur.id"
               class="hover:bg-slate-50 transition-colors"
               :class="{ 'bg-slate-25': index % 2 === 1 }"
             >
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
-<!--                  <div class="flex-shrink-0 h-12 w-12">-->
-<!--                    <div v-if="country.flag" class="h-12 w-12 rounded-full overflow-hidden border-2 border-slate-200">-->
-<!--                      <img :src="country.flag" :alt="`Drapeau ${country.name}`" class="w-full h-full object-cover">-->
-<!--                    </div>-->
-<!--                    <div v-else class="h-12 w-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">-->
-<!--                      <span class="text-white font-bold text-sm">{{ country.code.substring(0, 2) }}</span>-->
-<!--                    </div>-->
-<!--                  </div>-->
+
                   <div class="ml-4">
-                    <div class="text-sm font-bold text-slate-900">{{ country.name }}</div>
-<!--                    <div class="text-sm text-slate-500">{{ country.iso }}</div>-->
+                    <div class="text-sm font-bold text-slate-900">{{ secteur.name }}</div>
                   </div>
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                   <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    {{ country.timezone }}
+                    {{ secteur.description }}
                   </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
-                {{ country.code }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
-                {{ country.iso }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <code class="text-xs bg-slate-100 px-2 py-1 rounded border text-slate-700">{{ country.mobileRegex }}</code>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
-                <span v-if="country.flag" class="truncate max-w-32 inline-block">{{ country.flag }}</span>
-                <span v-else class="text-slate-400 italic">Aucun drapeau</span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right">
                 <div class="flex justify-end space-x-2">
                   <button
-                    @click="openEditModal(country)"
+                    @click="openEditModal(secteur)"
                     class="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-all transform hover:scale-110"
-                    title="Modifier le pays"
+                    title="Modifier le secteur"
                   >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                     </svg>
                   </button>
                   <button
-                    @click="confirmDeleteCountry(country)"
+                    @click="confirmDeleteSector(secteur)"
                     class="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-all transform hover:scale-110"
-                    title="Supprimer le pays"
+                    title="Supprimer le secteur"
                   >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -199,26 +178,27 @@
           <svg class="mx-auto h-16 w-16 text-slate-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
           </svg>
-          <h3 class="text-xl font-semibold text-slate-900 mb-2">Aucun pays trouvé</h3>
+          <h3 class="text-xl font-semibold text-slate-900 mb-2">Aucun secteur trouvé</h3>
           <p class="text-slate-500 mb-6">
-            {{ searchTerm ? 'Aucun pays ne correspond à votre recherche.' : 'Commencez par ajouter votre premier pays.' }}
+            {{ searchTerm ? 'Aucun secteur' +
+            ' ne correspond à votre recherche.' : 'Commencez par ajouter votre premier secteur.' }}
           </p>
           <button
             v-if="!searchTerm"
             @click="openAddModal"
             class="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all transform hover:scale-105 shadow-lg"
           >
-            Ajouter le premier pays
+            Ajouter le premier secteur
           </button>
         </div>
 
         <!-- Pagination -->
-        <div v-if="filteredCountries.length > 0" class="bg-slate-50 px-6 py-4 border-t border-slate-200">
+        <div v-if="filteredSectors.length > 0" class="bg-slate-50 px-6 py-4 border-t border-slate-200">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="text-sm text-slate-700">
               Affichage de <span class="font-semibold">{{ startIndex + 1 }}</span> à
-              <span class="font-semibold">{{ Math.min(endIndex, filteredCountries.length) }}</span>
-              sur <span class="font-semibold">{{ filteredCountries.length }}</span> résultats
+              <span class="font-semibold">{{ Math.min(endIndex, filteredSectors.length) }}</span>
+              sur <span class="font-semibold">{{ filteredSectors.length }}</span> résultats
             </div>
 
             <div class="flex items-center space-x-3">
@@ -239,7 +219,7 @@
                   class="px-3 py-2 text-sm border border-slate-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
                   title="Première page"
                 >
-                  «
+
                 </button>
                 <button
                   @click="currentPage--"
@@ -282,7 +262,7 @@
           <!-- En-tête du modal -->
           <div class="flex items-center justify-between mb-6">
             <h2 class="text-2xl font-bold text-slate-900">
-              {{ isEditMode ? 'Modifier le pays' : 'Ajouter un nouveau pays' }}
+              {{ isEditMode ? 'Modifier le secteur' : 'Ajouter un nouveau secteur' }}
             </h2>
             <button
               @click="closeModal"
@@ -295,99 +275,37 @@
           </div>
 
           <!-- Formulaire -->
-          <form @submit.prevent="saveCountry" class="space-y-6">
+          <form @submit.prevent="saveSector" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- Nom du pays -->
+              <!-- Nom du secteur -->
               <div class="md:col-span-2">
                 <label class="block text-sm font-semibold text-slate-700 mb-2">
-                  Nom du pays <span class="text-red-500">*</span>
+                  Nom du secteur <span class="text-red-500">*</span>
                 </label>
                 <input
                   v-model="formData.name"
                   type="text"
                   required
                   class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                  placeholder="Ex: France"
+                  placeholder="Pharmacie"
                 >
               </div>
 
-              <!-- Code -->
+              <!-- description -->
               <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">
-                  Code <span class="text-red-500">*</span>
+                  description <span class="text-red-500">*</span>
                 </label>
                 <input
-                  v-model="formData.code"
-                  type="number"
-                  required
-                  class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                  placeholder="Ex: 237"
-                >
-              </div>
-
-              <!-- ISO -->
-              <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-2">
-                  Code ISO <span class="text-red-500">*</span>
-                </label>
-                <input
-                  v-model="formData.iso"
+                  v-model="formData.description"
                   type="text"
                   required
                   class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                  placeholder="Ex: FR"
+                  placeholder="Medicament pour enfant et adulte
+"
                 >
-              </div>
-
-              <!-- Timezone -->
-              <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-2">
-                 Timezone <span class="text-red-500">*</span>
-                </label>
-                <input
-                  v-model="formData.timezone"
-                  type="text"
-                  required
-                  class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                  placeholder="Ex: Europe/Paris"
-                >
-              </div>
-
-              <!-- Mobile Regex -->
-              <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-2">
-                  Regex Mobile <span class="text-red-500">*</span>
-                </label>
-                <input
-                  v-model="formData.mobileRegex"
-                  type="text"
-                  required
-                  class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-mono text-sm"
-                  placeholder="Ex: ^0[6-7][0-9]{8}$"
-                >
-              </div>
-
-              <!-- Drapeau -->
-              <div class="md:col-span-2">
-                <label class="block text-sm font-semibold text-slate-700 mb-2">
-                  URL du drapeau
-                </label>
-                <input
-                  v-model="formData.flag"
-                  type="url"
-                  class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                  placeholder="https://example.com/flag.png"
-                >
-                <p class="text-xs text-slate-500 mt-1">URL vers l'image du drapeau</p>
               </div>
             </div>
-
-<!--            &lt;!&ndash; Aperçu du drapeau &ndash;&gt;-->
-<!--            <div v-if="formData.flag" class="flex items-center gap-3 p-4 bg-slate-50 rounded-xl">-->
-<!--              <img :src="formData.flag" alt="Aperçu du drapeau" class="w-12 h-12 rounded object-cover border border-slate-200">-->
-<!--              <span class="text-sm text-slate-600">Aperçu du drapeau</span>-->
-<!--            </div>-->
-
             <!-- Actions du formulaire -->
             <div class="flex justify-end gap-3 pt-4 border-t border-slate-200">
               <button
@@ -425,7 +343,7 @@
 
           <h3 class="text-lg font-bold text-slate-900 text-center mb-2">Confirmer la suppression</h3>
           <p class="text-slate-600 text-center mb-6">
-            Êtes-vous sûr de vouloir supprimer le pays <strong>{{ countryToDelete?.name }}</strong> ?
+            Êtes-vous sûr de vouloir supprimer le secteur <strong>{{ sectorToDelete?.name }}</strong> ?
             Cette action est irréversible.
           </p>
 
@@ -437,7 +355,7 @@
               Annuler
             </button>
             <button
-              @click="deleteCountry"
+              @click="deleteSector"
               :disabled="isDeleting"
               class="flex-1 px-4 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
             >
@@ -457,27 +375,22 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import Header from '@/frontend/view/components/header.vue';
 import Dashboard from '@/frontend/view/components/dashboard.vue';
-import { fetchCountriesData } from '@/frontend/Ctr/country.ts';
-import Country from '@/frontend/service/country.service.ts'
 
 // Interface pour les pays
-interface CountryEntry {
+interface SectorEntry {
   id: string;
-  code: string;
   name: string;
-  iso: string;
-  timezone: string;
-  mobileRegex: string;
-  flag: string;
+  active: boolean;
+  description: string;
 }
 
 // États réactifs principaux
-const countries = ref<CountryEntry[]>([]);
+const sectors = ref<SectorEntry[]>([]);
 const isLoading = ref(false);
 const loadError = ref<string | null>(null);
 const successMessage = ref<string | null>(null);
 const searchTerm = ref('');
-const sortKey = ref<keyof CountryEntry>('name');
+const sortKey = ref<keyof SectorEntry>('name');
 const sortDirection = ref<'asc' | 'desc'>('asc');
 const currentPage = ref(1);
 const itemsPerPage = ref(10);
@@ -488,37 +401,32 @@ const showDeleteModal = ref(false);
 const isEditMode = ref(false);
 const isSaving = ref(false);
 const isDeleting = ref(false);
-const countryToDelete = ref<CountryEntry | null>(null);
+const sectorToDelete = ref<SectorEntry | null>(null);
 
 // Données du formulaire
-const formData = ref<Partial<CountryEntry>>({
+const formData = ref<Partial<SectorEntry>>({
   name: '',
-  code: '',
-  iso: '',
-  timezone: '',
-  mobileRegex: '',
-  flag: ''
+  active: false,
+  description: '',
 });
 
 // Colonnes du tableau
 const columns = [
-  { key: 'name' as keyof CountryEntry, label: 'Nom du Pays' },
-  { key: 'timezone' as keyof CountryEntry, label: 'Timezone' },
-  { key: 'code' as keyof CountryEntry, label: 'Code' },
-  { key: 'iso' as keyof CountryEntry, label: 'Code ISO' },
-  { key: 'mobileRegex' as keyof CountryEntry, label: 'Regex Mobile' },
-  { key: 'flag' as keyof CountryEntry, label: 'Drapeau' }
+  { key: 'name' as keyof SectorEntry, label: 'Nom du secteur' },
+  { key: 'description' as keyof SectorEntry, label: 'Description' },
+  { key: 'active' as keyof SectorEntry, label: 'Actif' },
+
 ];
 
 // Fonction pour charger les pays
-const loadCountries = async () => {
+const loadSectors = async () => {
   try {
     isLoading.value = true;
     loadError.value = null;
     successMessage.value = null;
 
     // Appel au contrôleur pour charger les données
-    countries.value = await fetchCountriesData();
+    sectors.value = await fetchSectorsData();
 
   } catch (error) {
     console.error('Erreur lors du chargement:', error);
@@ -526,7 +434,7 @@ const loadCountries = async () => {
   } finally {
     isLoading.value = false;
   }
-};
+};;
 
 // Notifications
 const notification = ref({
@@ -535,6 +443,10 @@ const notification = ref({
   detail: '',
   type: 'info' as 'success' | 'error' | 'warning' | 'info',
 });
+
+const paginatedSectors = computed(() =>
+  filteredSectors.value.slice(startIndex.value, endIndex.value)
+);
 
 // Gestion des messages
 const clearMessages = () => {
@@ -552,16 +464,15 @@ watch(successMessage, (newMessage) => {
 });
 
 // Computed properties
-const filteredCountries = computed(() => {
-  let filtered = countries.value;
+const filteredSectors = computed(() => {
+  let filtered = sectors.value;
 
   // Filtrage par terme de recherche
   if (searchTerm.value) {
     const term = searchTerm.value.toLowerCase();
-    filtered = filtered.filter(country =>
-      country.name.toLowerCase().includes(term) ||
-      country.code.toString().toLowerCase().includes(term) ||
-      country.iso.toUpperCase().includes(term)
+    filtered = filtered.filter(sector =>
+      sector.name.toLowerCase().includes(term) ||
+      sector.description.toLowerCase().includes(term)
     );
   }
 
@@ -581,7 +492,7 @@ const filteredCountries = computed(() => {
 });
 
 const totalPages = computed(() =>
-  Math.ceil(filteredCountries.value.length / itemsPerPage.value)
+  Math.ceil(filteredSectors.value.length / itemsPerPage.value)
 );
 
 const startIndex = computed(() =>
@@ -592,12 +503,10 @@ const endIndex = computed(() =>
   startIndex.value + itemsPerPage.value
 );
 
-const paginatedCountries = computed(() =>
-  filteredCountries.value.slice(startIndex.value, endIndex.value)
-);
+
 
 // Watchers
-watch(filteredCountries, () => {
+watch(filteredSectors, () => {
   currentPage.value = 1;
 });
 
@@ -606,7 +515,7 @@ watch(itemsPerPage, () => {
 });
 
 // Méthodes de tri
-const sort = (key: keyof CountryEntry) => {
+const sort = (key: keyof SectorEntry) => {
   if (sortKey.value === key) {
     sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
   } else {
@@ -620,19 +529,15 @@ const openAddModal = () => {
   isEditMode.value = false;
   formData.value = {
     name: '',
-    code: '',
-    iso: '',
-    timezone: '',
-    mobileRegex: '',
-    flag: ''
+    description: '',
   };
   showModal.value = true;
   clearMessages();
 };
 
-const openEditModal = (country: CountryEntry) => {
+const openEditModal = (universe: SectorEntry) => {
   isEditMode.value = true;
-  formData.value = { ...country };
+  formData.value = { ...universe };
   showModal.value = true;
   clearMessages();
 };
@@ -659,52 +564,38 @@ const closeModal = () => {
   showModal.value = false;
   formData.value = {
     name: '',
-    code: '',
-    iso: '',
-    timezone: '',
-    mobileRegex: '',
-    flag: ''
+    description: '',
   };
 };
 
 // Validation du formulaire
 const validateForm = (): string | null => {
   if (!formData.value.name?.trim()) {
-    return 'Le nom du pays est obligatoire';
+    return 'Le nom du secteur est obligatoire';
   }
-  if (!formData.value.code || typeof formData.value.code !== 'number') {
-    return 'Le code du pays est obligatoire';
-  }
-  if (!formData.value.iso?.trim()) {
-    return 'Le code ISO est obligatoire';
-  }
-  if (!formData.value.timezone?.trim()) {
-    return 'Le fuseau horaire est obligatoire';
-  }
-  if (!formData.value.mobileRegex?.trim()) {
-    return 'Le regex mobile est obligatoire';
+  if (!formData.value.description?.trim()) {
+    return 'Le description  est obligatoire';
   }
 
   // Vérifier les doublons (sauf pour le pays en cours d'édition)
-  const existingCountry = countries.value.find(country =>
-      country.id !== formData.value.id && (
-        country.name.toLowerCase() === formData.value.name?.toLowerCase() ||
-        country.code === formData.value.code ||
-        country.iso.toLowerCase() === formData.value.iso?.toLowerCase()
+  const existingSectors = sectors.value.find(universe =>
+      universe.id !== formData.value.id && (
+        universe.name.toLowerCase() === formData.value.name?.toLowerCase() ||
+        universe.description.toLowerCase() === formData.value.description?.toLowerCase()
       )
   );
 
-  if (existingCountry) {
-    return 'Un pays avec ce nom, code ou ISO existe déjà';
+  if (existingSectors) {
+    return 'Un secteur avec ce nom, description existe déjà';
   }
 
   return null;
 };
 
 // Gestion de la sauvegarde
-const saveCountry = async () => {
+const saveSector = async () => {
   try {
-    // isSaving.value = true;
+    isSaving.value = true;
 
     // Validation
     const validationError = validateForm();
@@ -715,26 +606,26 @@ const saveCountry = async () => {
 
     if (isEditMode.value && formData.value.id) {
       // Modification
-      const index = countries.value.findIndex(c => c.id === formData.value.id);
+      const index = sectors.value.findIndex(c => c.id === formData.value.id);
       if (index !== -1) {
-        countries.value[index] = { ...formData.value } as CountryEntry;
-        successMessage.value = `Le pays "${formData.value.name}" a été modifié avec succès`;
+        sectors.value[index] = { ...formData.value } as SectorEntry;
+        successMessage.value = `Le secteur "${formData.value.name}" a été modifié avec succès`;
       }
     } else {
       // Ajout
       try {
         isSaving.value = true;
 
-        const response = await Country.save(formData.value);
+        const response = await SectorService.save(formData.value);
 
         if (response.status === 201) {
-          const createdCountry: CountryEntry = await response.response; // <-- dépend de ton contrôleur
-          countries.value.unshift(createdCountry);
+          const createSector: SectorEntry = await response.response; // <-- dépend de ton contrôleur
+          sectors.value.unshift(createSector);
 
-          successMessage.value = `Le pays "${createdCountry.name}" a été ajouté avec succès`;
-          showNotification(`Le pays "${createdCountry.name}" a été ajouté avec succès`);
+          successMessage.value = `Le secteur "${createSector.name}" a été ajouté avec succès`;
+          showNotification(`Le secteur "${createSector.name}" a été ajouté avec succès`);
         } else {
-          loadError.value = "Erreur lors de la création du pays";
+          loadError.value = "Erreur lors de la création du secteur";
         }
 
         closeModal();
@@ -750,31 +641,31 @@ const saveCountry = async () => {
 }
 
 // Gestion de la suppression
-const confirmDeleteCountry = (country: CountryEntry) => {
-  countryToDelete.value = country;
+const confirmDeleteSector = (universe: SectorEntry) => {
+  sectorToDelete.value = universe;
   showDeleteModal.value = true;
   clearMessages();
 };
 
 const closeDeleteModal = () => {
   showDeleteModal.value = false;
-  countryToDelete.value = null;
+  sectorToDelete.value = null;
 };
 
-const deleteCountry = async () => {
-  if (!countryToDelete.value) return;
+const deleteSector = async () => {
+  if (!sectorToDelete.value) return;
 
   try {
     isDeleting.value = true;
 
-    const index = countries.value.findIndex(c => c.id === countryToDelete.value!.id);
+    const index = sectors.value.findIndex(c => c.id === sectorToDelete.value!.id);
     if (index !== -1) {
-      const deletedCountryName = countries.value[index].name;
-      countries.value.splice(index, 1);
-      successMessage.value = `Le pays "${deletedCountryName}" a été supprimé avec succès`;
+      const deletedSectorName = sectors.value[index].name;
+      sectors.value.splice(index, 1);
+      successMessage.value = `Le secteur "${deletedSectorName}" a été supprimé avec succès`;
 
       // Ajuster la pagination si nécessaire
-      if (paginatedCountries.value.length === 0 && currentPage.value > 1) {
+      if (paginatedSectors.value.length === 0 && currentPage.value > 1) {
         currentPage.value--;
       }
     }
@@ -808,7 +699,7 @@ const handleKeydown = (event: KeyboardEvent) => {
 
 // Chargement initial et événements
 onMounted(() => {
-  loadCountries();
+  loadSectors();
 
   // // Si pas de données, charger des exemples après 2 secondes
   // setTimeout(() => {
@@ -820,6 +711,9 @@ onMounted(() => {
 
 // Nettoyage
 import { onUnmounted } from 'vue';
+import SectorService from '@/frontend/service/sector.service.ts';
+import { fetchSectorsData } from '@/frontend/Ctr/sector.ts';
+
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown);
 });

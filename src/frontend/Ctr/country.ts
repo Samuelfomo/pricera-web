@@ -1,4 +1,4 @@
-  import Country from '../service/country.service';
+import Country from '@/frontend/service/country.service.ts';
 
 export const fetchCountriesData = async (): Promise<any[]> => {
   try {

@@ -17,7 +17,7 @@ export default class UniverseModel extends BaseModel {
   protected id?: number;
   protected guid?: number;
   protected name?: string;
-  protected sector?: number[];
+  protected sector?: any[];
   protected description?: string;
 
   protected constructor() {
@@ -69,30 +69,23 @@ export default class UniverseModel extends BaseModel {
     await this.validate();
 
     // Générer le GUID automatiquement
-    const guid = await this.guidGenerator(this.db.tableName, 6);
-    if (!guid) {
-      throw new Error('Failed to generate GUID for univers entry');
-    }
 
     const existingName = await this.findByName(this.name!);
     if (existingName) throw new Error(`Univers name '${this.name}' already exists in database`);
 
     const lastID = await this.insertOne(this.db.tableName, {
-      [this.db.guid]: guid,
+      [this.db.guid]: this.guid,
       [this.db.name]: this.name,
-      [this.db.sector]: this.sector,
+      // [this.db.sector]: this.sector,
       [this.db.description]: this.description,
     });
 
-    console.log(
-      `🌌 Univers créé - Name: ${this.name} | GUID: ${guid} | Sectors: ${this.sector?.join(', ')}`
-    );
+
 
     if (!lastID) {
       throw new Error('Failed to create univers entry');
     }
     this.id = lastID;
-    this.guid = guid;
     console.log('✅ Univers créé avec ID:', this.id);
   }
 
@@ -139,7 +132,7 @@ export default class UniverseModel extends BaseModel {
   /**
    * Ajoute un secteur à l'univers
    */
-  protected async addSector(sectorId: number): Promise<void> {
+  protected async addSector(sectorId: JSON): Promise<void> {
     if (!this.sector) {
       this.sector = [];
     }
@@ -153,7 +146,7 @@ export default class UniverseModel extends BaseModel {
   /**
    * Supprime un secteur de l'univers
    */
-  protected async removeSector(sectorId: number): Promise<void> {
+  protected async removeSector(sectorId: JSON): Promise<void> {
     if (!this.sector) return;
 
     const index = this.sector.indexOf(sectorId);
@@ -166,7 +159,7 @@ export default class UniverseModel extends BaseModel {
   /**
    * Vérifie si l'univers contient un secteur
    */
-  protected hasSector(sectorId: number): boolean {
+  protected hasSector(sectorId: JSON): boolean {
     return this.sector ? this.sector.includes(sectorId) : false;
   }
 
@@ -176,10 +169,10 @@ export default class UniverseModel extends BaseModel {
       throw new Error('Univers name must be between 1 and 100 characters');
     }
 
-    // Valider les secteurs
-    if (this.sector === undefined || !UniverseDbStructure.validation.validateSectors(this.sector)) {
-      throw new Error('Univers must have at least one valid sector (positive integer array)');
-    }
+    // // Valider les secteurs
+    // if (this.sector === undefined || !UniverseDbStructure.validation.validateSectors(this.sector)) {
+    //   throw new Error('Univers must have at least one valid sector (positive integer array)');
+    // }
 
     // Valider la description
     if (!UniverseDbStructure.validation.validateDescription(this.description)) {

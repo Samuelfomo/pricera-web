@@ -61,7 +61,7 @@ export const CountryDbStructure = {
   options: {
     tableName: `${G.confTable}country`,
     timestamps: true,
-    comment: 'SectorEntry table with geographical and validation information',
+    comment: 'UniverseEntry table with geographical and validation information',
     indexes: [
       {
         unique: true,

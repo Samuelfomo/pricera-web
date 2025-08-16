@@ -7,11 +7,15 @@ import Db from './database/db.config';
 import { TableInitializer } from './database/db.initializer';
 import Revision from './tools/revision'
 
-import profileCtrls from "./ctrl/profileCtrl"
+import profileCtrl from "./ctrl/profileCtrl"
 import lexiconCtrl from "./ctrl/lexiqueCtrl"
 import userCtrl from "./ctrl/userCtrl"
 import G from './tools/glossary';
 import countryCtrl from './ctrl/countryCtrl';
+import sectorCtrl from './ctrl/sectorCtrl';
+import universeCtrl from './ctrl/universeCtrl'
+import surveyCtrl from './ctrl/surveyCtrl';
+import productCtrl from './ctrl/productCtrl';
 
 interface AppConfig {
   port: number;
@@ -110,10 +114,14 @@ export default class App {
 
     // TODO: Ajouter les routes métier ici
 
-    this.app.use('/profile', profileCtrls);
+    this.app.use('/profile', profileCtrl);
     this.app.use('/lexicon', lexiconCtrl);
     this.app.use('/user', userCtrl);
     this.app.use('/country', countryCtrl);
+    this.app.use('/sector', sectorCtrl);
+    this.app.use('/universe', universeCtrl);
+    this.app.use('/survey', surveyCtrl);
+    this.app.use('/product', productCtrl)
 
     // Route 404
     this.app.use((req, res) => {

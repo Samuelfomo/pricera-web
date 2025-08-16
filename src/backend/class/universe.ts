@@ -1,27 +1,27 @@
-import SectorModel from '../model/SectorModel';
+import UniverseModel from '../model/UniverseModel';
 
-export default class Sector extends SectorModel {
+export default class Universe extends UniverseModel {
   constructor() {
     super();
   }
 
-  setGuid(guid: number): Sector {
+  setGuid(guid: number): Universe {
     this.guid = guid;
     return this;
   }
 
-  setName(name: string): Sector {
+  setName(name: string): Universe {
     this.name = name;
     return this;
   }
 
-  setDescription(description: string): Sector {
+  setDescription(description: string): Universe {
     this.description = description;
     return this;
   }
 
-  setActive(active: boolean): Sector {
-    this.active = active;
+  setSector(sector: object[]): Universe {
+    this.sector = sector;
     return this;
   }
 
@@ -38,13 +38,14 @@ export default class Sector extends SectorModel {
     return this.name;
   }
 
-  isActive(): boolean | undefined {
-    return this.active;
-  }
-
   getDescription(): string | undefined {
     return this.description;
   }
+
+  getSector(): any[] | undefined  {
+    return this.sector;
+  }
+
 
   /**
    * Populates the instance properties with the provided items and returns the instance.
@@ -52,11 +53,11 @@ export default class Sector extends SectorModel {
    * @param {any} data - The items object containing properties to hydrate the instance.
    * @return {Sector} The updated instance of the Sector class.
    */
-  private hydrate(data: any): Sector {
+  private hydrate(data: any): Universe {
     this.id = data.id;
     this.guid = data.guid;
     this.name = data.name;
-    this.active = data.active;
+    this.sector = data.sector;
     this.description = data.description;
     return this;
   }
@@ -109,10 +110,10 @@ export default class Sector extends SectorModel {
    *
    * @return {Promise<void>} A promise that resolves when the status update and save operations are completed.
    */
-  async patchStatus(): Promise<void> {
-    this.active = !this.active;
-    await this.save();
-  }
+  // async patchStatus(): Promise<void> {
+  //   this.active = !this.active;
+  //   await this.save();
+  // }
 
   /**
    * Loads a sector by a given identifier or guid.
@@ -121,7 +122,7 @@ export default class Sector extends SectorModel {
    * @param {boolean} [byGuid=false] - A flag indicating if the lookup should be by Guid (true) or by numeric identifier (false).
    * @return {Promise<Sector|null>} A promise resolving to the found sector object if successful, or null if not found.
    */
-  async load(identifier: any, byGuid: boolean = false): Promise<Sector | null> {
+  async load(identifier: any, byGuid: boolean = false): Promise<Universe | null> {
     const data = byGuid ? await this.findByGuid(identifier) : await this.find(Number(identifier));
     if (!data) return null;
     return this.hydrate(data);
@@ -135,10 +136,10 @@ export default class Sector extends SectorModel {
    */
   async list(
     conditions: Record<string, any> = {},
-  ): Promise<Sector[] | null> {
+  ): Promise<Universe[] | null> {
     const dataset = await this.listAll(conditions);
     if (!dataset) return null;
-    return dataset.map((data) => new Sector().hydrate(data));
+    return dataset.map((data) => new Universe().hydrate(data));
   }
 
   /**
@@ -158,6 +159,7 @@ export default class Sector extends SectorModel {
     return {
       guid: this.guid,
       name: this.name,
+      sector: this.sector,
       description: this.description,
     };
   }
@@ -167,7 +169,7 @@ export default class Sector extends SectorModel {
    * @return {string} A string containing the guid, name, and active status of the Sector.
    */
   toString(): string {
-    return `Sector { guid: ${this.guid}, name: "${this.name}", description: "${this.description}", active: ${this.active} }`;
+    return `Universe { guid: ${this.guid}, name: "${this.name}", description: "${this.description}", sector: ${this.sector} }`;
   }
 
   /**
@@ -177,8 +179,8 @@ export default class Sector extends SectorModel {
    * @param {boolean} [byGuid=false] - A flag indicating whether to load the sector by guid.
    * @return {Promise<Sector | null>} A promise that resolves to the loaded sector instance or null if not found.
    */
-  static _load(identifier: any, byGuid: boolean = false): Promise<Sector | null> {
-    return new Sector().load(identifier, byGuid);
+  static _load(identifier: any, byGuid: boolean = false): Promise<Universe | null> {
+    return new Universe().load(identifier, byGuid);
   }
 
   /**
@@ -189,11 +191,13 @@ export default class Sector extends SectorModel {
    */
   static _list(
     conditions: Record<string, any> = {},
-  ): Promise<Sector[] | null> {
-    return new Sector().list(conditions);
+  ): Promise<Universe[] | null> {
+    return new Universe().list(conditions);
   }
 
   static async _deleteAll(): Promise<boolean> {
-    return await new Sector().trashAll()
+    return await new Universe().trashAll()
   }
+
+
 }
