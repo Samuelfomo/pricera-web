@@ -13,7 +13,7 @@ export default class UniverseService {
       }
 
       const data = await response.json();
-      console.log('Données de l\'API :', data.response.countries);
+      console.log('Données de l\'API :', data.response.universes);
 
       return data.response.universes;
     } catch (error) {

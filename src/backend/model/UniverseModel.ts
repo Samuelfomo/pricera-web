@@ -76,7 +76,7 @@ export default class UniverseModel extends BaseModel {
     const lastID = await this.insertOne(this.db.tableName, {
       [this.db.guid]: this.guid,
       [this.db.name]: this.name,
-      // [this.db.sector]: this.sector,
+      [this.db.sector]: this.sector,
       [this.db.description]: this.description,
     });
 

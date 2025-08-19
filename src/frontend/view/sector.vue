@@ -40,7 +40,7 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
-                Ajouter un secteur
+                Ajouter
               </button>
 
               <button
@@ -128,8 +128,8 @@
             </thead>
             <tbody class="bg-white divide-y divide-slate-100">
             <tr
-              v-for="(secteur, index) in paginatedSectors"
-              :key="secteur.id"
+              v-for="(sector, index) in paginatedSectors"
+              :key="sector.id"
               class="hover:bg-slate-50 transition-colors"
               :class="{ 'bg-slate-25': index % 2 === 1 }"
             >
@@ -137,35 +137,78 @@
                 <div class="flex items-center">
 
                   <div class="ml-4">
-                    <div class="text-sm font-bold text-slate-900">{{ secteur.name }}</div>
+                    <div class="text-sm font-bold text-slate-900">{{ sector.name }}</div>
                   </div>
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                   <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    {{ secteur.description }}
+                    {{ sector.description }}
                   </span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right">
-                <div class="flex justify-end space-x-2">
-                  <button
-                    @click="openEditModal(secteur)"
-                    class="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-all transform hover:scale-110"
-                    title="Modifier le secteur"
-                  >
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                    </svg>
-                  </button>
-                  <button
-                    @click="confirmDeleteSector(secteur)"
-                    class="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-all transform hover:scale-110"
-                    title="Supprimer le secteur"
-                  >
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                    </svg>
-                  </button>
+                <div class="flex justify-end">
+                  <!-- Menu dropdown -->
+                  <div class="relative" @click.stop>
+                    <button
+                      @click="toggleDropdown(sector.id)"
+                      :class="{
+                        'opacity-100': hoveredRowId === sector.id || activeDropdownId === sector.id,
+                        'opacity-0 group-hover:opacity-100': hoveredRowId !== sector.id && activeDropdownId !== sector.id
+                      }"
+                      class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all transform hover:scale-110"
+                      title="Options"
+                    >
+                      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/>
+                      </svg>
+                    </button>
+
+                    <!-- Menu déroulant -->
+                    <div
+                      v-if="activeDropdownId === sector.id"
+                      class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 z-50 animate-fade-in"
+                      @click.stop
+                    >
+                      <div class="py-2">
+                        <!-- Option Modifier -->
+                        <button
+                          @click="openEditModal(sector)"
+                          class="flex items-center w-full px-4 py-2 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                        >
+                          <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                          </svg>
+                          Modifier
+                        </button>
+
+                        <!-- Option Copier -->
+                        <button
+                          @click="copySector(sector.name)"
+                          class="flex items-center w-full px-4 py-2 text-sm text-slate-700 hover:bg-green-50 hover:text-green-600 transition-colors"
+                        >
+<!--                          <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">-->
+<!--                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>-->
+<!--                          </svg>-->
+                          {{ copiedText === sector.name ? "✅ Nom copié" : "📋 Copier Nom" }}
+                        </button>
+
+                        <!-- Séparateur -->
+                        <hr class="my-2 border-slate-200">
+
+                        <!-- Option Supprimer -->
+                        <button
+                          @click="confirmDeleteSector(sector)"
+                          class="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+                        >
+                          <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                          </svg>
+                          Supprimer
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -394,6 +437,8 @@ const sortKey = ref<keyof SectorEntry>('name');
 const sortDirection = ref<'asc' | 'desc'>('asc');
 const currentPage = ref(1);
 const itemsPerPage = ref(10);
+const copiedText = ref("")
+
 
 // États des modals
 const showModal = ref(false);
@@ -402,6 +447,10 @@ const isEditMode = ref(false);
 const isSaving = ref(false);
 const isDeleting = ref(false);
 const sectorToDelete = ref<SectorEntry | null>(null);
+
+// États pour le dropdown et le hover
+const activeDropdownId = ref<string | null>(null);
+const hoveredRowId = ref<string | null>(null);
 
 // Données du formulaire
 const formData = ref<Partial<SectorEntry>>({
@@ -447,6 +496,11 @@ const notification = ref({
 const paginatedSectors = computed(() =>
   filteredSectors.value.slice(startIndex.value, endIndex.value)
 );
+
+// Fonctions pour le dropdown
+const toggleDropdown = (sectorId: string) => {
+  activeDropdownId.value = activeDropdownId.value === sectorId ? null : sectorId;
+};
 
 // Gestion des messages
 const clearMessages = () => {
@@ -535,9 +589,9 @@ const openAddModal = () => {
   clearMessages();
 };
 
-const openEditModal = (universe: SectorEntry) => {
+const openEditModal = (sector: SectorEntry) => {
   isEditMode.value = true;
-  formData.value = { ...universe };
+  formData.value = { ...sector };
   showModal.value = true;
   clearMessages();
 };
@@ -577,11 +631,11 @@ const validateForm = (): string | null => {
     return 'Le description  est obligatoire';
   }
 
-  // Vérifier les doublons (sauf pour le pays en cours d'édition)
-  const existingSectors = sectors.value.find(universe =>
-      universe.id !== formData.value.id && (
-        universe.name.toLowerCase() === formData.value.name?.toLowerCase() ||
-        universe.description.toLowerCase() === formData.value.description?.toLowerCase()
+  // Vérifier les doublons
+  const existingSectors = sectors.value.find(sector =>
+    sector.id !== formData.value.id && (
+      sector.name.toLowerCase() === formData.value.name?.toLowerCase() ||
+      sector.description.toLowerCase() === formData.value.description?.toLowerCase()
       )
   );
 
@@ -595,7 +649,6 @@ const validateForm = (): string | null => {
 // Gestion de la sauvegarde
 const saveSector = async () => {
   try {
-    isSaving.value = true;
 
     // Validation
     const validationError = validateForm();
@@ -617,6 +670,8 @@ const saveSector = async () => {
         isSaving.value = true;
 
         const response = await SectorService.save(formData.value);
+        console.log("Réponse du backend:", response);
+
 
         if (response.status === 201) {
           const createSector: SectorEntry = await response.response; // <-- dépend de ton contrôleur
@@ -640,9 +695,23 @@ const saveSector = async () => {
   }
 }
 
+// Fonction pour copier un univers
+const copySector = async (text: string ) => {
+  try {
+    await navigator.clipboard.writeText(String(text));
+    copiedText.value = String(text);
+
+    setTimeout(() => {
+      copiedText.value = "";
+    }, 2000);
+  } catch (err) {
+    alert("❌ Impossible de copier");
+  }
+};
+
 // Gestion de la suppression
-const confirmDeleteSector = (universe: SectorEntry) => {
-  sectorToDelete.value = universe;
+const confirmDeleteSector = (sector: SectorEntry) => {
+  sectorToDelete.value = sector;
   showDeleteModal.value = true;
   clearMessages();
 };

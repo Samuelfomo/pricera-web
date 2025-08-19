@@ -1,6 +1,8 @@
 import UniverseModel from '../model/UniverseModel';
+import Sector from '../class/Sector';
 
 export default class Universe extends UniverseModel {
+  private sectors?: Sector[];
   constructor() {
     super();
   }
@@ -20,7 +22,7 @@ export default class Universe extends UniverseModel {
     return this;
   }
 
-  setSector(sector: object[]): Universe {
+  setSector(sector: any[]): Universe {
     this.sector = sector;
     return this;
   }
@@ -41,10 +43,46 @@ export default class Universe extends UniverseModel {
   getDescription(): string | undefined {
     return this.description;
   }
+  async getSector(): Promise<Sector[]> {
+    if (!this.sector || (Array.isArray(this.sector) && this.sector.length === 0)) {
+      return [];
+    }
 
-  getSector(): any[] | undefined  {
-    return this.sector;
+    if (!this.sectors) {
+      let sectorIds: number[] = [];
+
+      if (typeof this.sector === 'string') {
+        try {
+          // Si c’est une string JSON → on parse
+          const parsed = JSON.parse(this.sector);
+          sectorIds = Array.isArray(parsed) ? parsed : [parsed];
+        } catch (e) {
+          console.error('Erreur de parsing sector:', this.sector, e);
+          return [];
+        }
+      } else {
+        // Déjà un nombre ou un tableau
+        sectorIds = Array.isArray(this.sector) ? this.sector : [this.sector];
+      }
+
+      console.log('sectorIds normalisés:', sectorIds);
+
+      const loadedSectors = await Promise.all(
+        sectorIds.map(async (sectorId: number) => {
+          console.log('sectorId', sectorId);
+          const sectorData = await Sector._load(sectorId);
+          return sectorData ?? null;
+        })
+      );
+
+      this.sectors = loadedSectors.filter(
+        (sector): sector is Sector => sector !== null
+      );
+    }
+
+    return this.sectors;
   }
+
 
 
   /**
@@ -155,11 +193,12 @@ export default class Universe extends UniverseModel {
    * Converts the instance properties to a JSON object representation.
    * @return {object} A JSON object containing the `name` and `token` properties of the instance.
    */
-  toJSON(): object {
+  async toJSON(): Promise<object> {
+    const sectors = await this.getSector();
     return {
       guid: this.guid,
       name: this.name,
-      sector: this.sector,
+      sector: await Promise.all(sectors.map(async (sector: Sector) => sector.toJSON())),
       description: this.description,
     };
   }

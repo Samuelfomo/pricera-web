@@ -3,7 +3,7 @@ import api from '../tools/api';
 export class UniverseService {
   static async getAll(): Promise<any[] | null> {
     try {
-      const response = await api.get('/universe');
+      const response = await api.get('/universe?view=simple');
 
       return response.data.data.universes.items;
     } catch (error : any){

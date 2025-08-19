@@ -8,7 +8,7 @@
       <div class="mb-8">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div>
-            <h1 class="text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
+            <h1 class="text-2xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
               Gestion des pays
             </h1>
             <p class="text-slate-600 mt-2">{{ filteredCountries.length }} pays {{ searchTerm ? 'trouvés' : 'au total' }}</p>
@@ -40,7 +40,7 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
-                Ajouter un pays
+                Ajouter
               </button>
 
               <button
@@ -121,9 +121,9 @@
                   </div>
                 </div>
               </th>
-              <th class="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Actions
-              </th>
+<!--              <th class="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">-->
+<!--                Actions-->
+<!--              </th>-->
             </tr>
             </thead>
             <tbody class="bg-white divide-y divide-slate-100">
@@ -144,7 +144,7 @@
 <!--                    </div>-->
 <!--                  </div>-->
                   <div class="ml-4">
-                    <div class="text-sm font-bold text-slate-900">{{ country.name }}</div>
+                    <div class="text-2xl font-bold text-slate-900">{{ country.name }}</div>
 <!--                    <div class="text-sm text-slate-500">{{ country.iso }}</div>-->
                   </div>
                 </div>
@@ -168,25 +168,65 @@
                 <span v-else class="text-slate-400 italic">Aucun drapeau</span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right">
-                <div class="flex justify-end space-x-2">
+                <div class="relative" @click.stop>
                   <button
-                    @click="openEditModal(country)"
-                    class="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-all transform hover:scale-110"
-                    title="Modifier le pays"
+                    @click="toggleDropdown(country.id)"
+                    :class="{
+                        'opacity-100': hoveredRowId === country.id || activeDropdownId === country.id,
+                        'opacity-0 group-hover:opacity-100': hoveredRowId !== country.id && activeDropdownId !== country.id
+                      }"
+                    class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all transform hover:scale-110"
+                    title="Options"
                   >
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/>
                     </svg>
                   </button>
-                  <button
-                    @click="confirmDeleteCountry(country)"
-                    class="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-all transform hover:scale-110"
-                    title="Supprimer le pays"
+
+                  <!-- Menu déroulant -->
+                  <div
+                    v-if="activeDropdownId === country.id"
+                    class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 z-50 animate-fade-in"
+                    @click.stop
                   >
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                    </svg>
-                  </button>
+                    <div class="py-2">
+                      <!-- Option Modifier -->
+                      <button
+                        @click="openEditModal(country)"
+                        class="flex items-center w-full px-4 py-2 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                      >
+                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                        Modifier
+                      </button>
+
+                      <!-- Option Copier -->
+                      <button
+                        @click="copyCountry(country.name)"
+                        class="flex items-center w-full px-4 py-2 text-sm text-slate-700 hover:bg-green-50 hover:text-green-600 transition-colors"
+                      >
+                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                        </svg>
+                        {{ copiedText === country.name ? "✅ Nom copié" : "📋 Copier Nom" }}
+                      </button>
+
+                      <!-- Séparateur -->
+                      <hr class="my-2 border-slate-200">
+
+                      <!-- Option Supprimer -->
+                      <button
+                        @click="confirmDeleteCountry(country)"
+                        class="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+                      >
+                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                        Supprimer
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -475,6 +515,8 @@ const sortKey = ref<keyof CountryEntry>('name');
 const sortDirection = ref<'asc' | 'desc'>('asc');
 const currentPage = ref(1);
 const itemsPerPage = ref(10);
+const copiedText = ref("")
+
 
 // États des modals
 const showModal = ref(false);
@@ -483,6 +525,10 @@ const isEditMode = ref(false);
 const isSaving = ref(false);
 const isDeleting = ref(false);
 const countryToDelete = ref<CountryEntry | null>(null);
+
+// États pour le dropdown et le hover
+const activeDropdownId = ref<string | null>(null);
+const hoveredRowId = ref<string | null>(null);
 
 // Données du formulaire
 const formData = ref<Partial<CountryEntry>>({
@@ -495,14 +541,14 @@ const formData = ref<Partial<CountryEntry>>({
 });
 
 // Colonnes du tableau
-const columns = [
-  { key: 'name' as keyof CountryEntry, label: 'Nom du Pays' },
-  { key: 'timezone' as keyof CountryEntry, label: 'Timezone' },
-  { key: 'code' as keyof CountryEntry, label: 'Code' },
-  { key: 'iso' as keyof CountryEntry, label: 'Code ISO' },
-  { key: 'mobileRegex' as keyof CountryEntry, label: 'Regex Mobile' },
-  { key: 'flag' as keyof CountryEntry, label: 'Drapeau' }
-];
+// const columns = [
+//   { key: 'name' as keyof CountryEntry, label: 'Nom du Pays' },
+//   { key: 'timezone' as keyof CountryEntry, label: 'Timezone' },
+//   { key: 'code' as keyof CountryEntry, label: 'Code' },
+//   { key: 'iso' as keyof CountryEntry, label: 'Code ISO' },
+//   { key: 'mobileRegex' as keyof CountryEntry, label: 'Regex Mobile' },
+//   { key: 'flag' as keyof CountryEntry, label: 'Drapeau' }
+// ];
 
 // Fonction pour charger les pays
 const loadCountries = async () => {
@@ -624,6 +670,11 @@ const openAddModal = () => {
   clearMessages();
 };
 
+// Fonctions pour le dropdown
+const toggleDropdown = (countryId: string) => {
+  activeDropdownId.value = activeDropdownId.value === countryId ? null : countryId;
+};
+
 const openEditModal = (country: CountryEntry) => {
   isEditMode.value = true;
   formData.value = { ...country };
@@ -693,6 +744,20 @@ const validateForm = (): string | null => {
   }
 
   return null;
+};
+
+// Fonction pour copier un univers
+const copyCountry = async (text: string ) => {
+  try {
+    await navigator.clipboard.writeText(String(text));
+    copiedText.value = String(text);
+
+    setTimeout(() => {
+      copiedText.value = "";
+    }, 2000);
+  } catch (err) {
+    alert("❌ Impossible de copier");
+  }
 };
 
 // Gestion de la sauvegarde

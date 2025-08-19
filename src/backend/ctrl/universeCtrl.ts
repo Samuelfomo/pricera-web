@@ -3,7 +3,8 @@ import R from '../tools/response';
 import HttpStatus from '../tools/https-status';
 import G from '../tools/glossary';
 import { UniverseService } from '../service/universe.service';
-import Universe from '../class/universe';
+import Universe from '../class/Universe';
+import Sector from '../class/Sector';
 const router = Router();
 
 // region ROUTES D'EXPORT
@@ -14,7 +15,6 @@ const router = Router();
 router.get('/', async (_req: Request, res: Response) => {
   try {
     const universes = await Universe._list();
-    console.log(universes);
     if (!universes || universes.length === 0) {
 
       const result = await UniverseService.getAll();
@@ -25,6 +25,8 @@ router.get('/', async (_req: Request, res: Response) => {
         });
       }
 
+      console.log('result.length');
+
       const drop = await Universe._deleteAll();
       if (!drop) {
         return R.handleError(res, HttpStatus.INTERNAL_SERVER_ERROR, {
@@ -34,22 +36,32 @@ router.get('/', async (_req: Request, res: Response) => {
       }
       // return R.handleSuccess(res, ['deleted successfully', 'saved successfully']);
       const saved = await Promise.all(result.map(async (entry) => {
+
         const instance = new Universe()
           .setGuid(entry.guid)
           .setName(entry.name)
-          // .setSector(entry.sector)
           .setDescription(entry.description)
+        if (Array.isArray(entry.sectors.items)) {
+          let sectorIds: any[] = [];
+          await Promise.all(entry.sectors.items.map(async (sect: number) => {
+            const sectorData = await Sector._load(sect, true);
+            if (sectorData) {
+             sectorIds.push(sectorData.getId());
+            }
+          }))
+          instance.setSector(sectorIds);
+        }
 
         // .setUpdated(entry.updatedAt)
         await instance.save();
         return instance;
       }))
-      return R.handleSuccess(res, await Promise.all(saved.map(entry => entry.toJSON())));
+      console.log("saved", saved);
+      return R.handleSuccess(res, await Promise.all(saved.map(async entry => await entry.toJSON())));
     }
-
     return R.handleSuccess(res, {
       count: universes.length,
-      universes: universes.map((l) => l.toJSON())
+      universes: await Promise.all(universes.map(async (l) => await l.toJSON()))
     });
   } catch (error: any) {
     console.log(error.message);
