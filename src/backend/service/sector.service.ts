@@ -11,34 +11,30 @@ export class SectorService {
 
       return response.data.data.sectors.items;
     } catch (error: any) {
-      console.error('Erreur dans SectorService.getAll():', error.message);
-      console.error('Status code:', error.response?.status);
+      throw new Error(error.message);
 
-      // // Si l'API externe échoue (401, etc.), retourner des données de test
-      // if (error.response?.status === 401) {
-      //   console.log('Erreur 401 - Retour de données de test');
-      //   return [
-      //     {
-      //       code: 1,
-      //       name: "Technologie",
-      //       description: "Secteur technologique",
-      //       active: true
-      //     },
-      //     {
-      //       code: 2,
-      //       name: "Santé",
-      //       description: "Secteur de la santé",
-      //       active: true
-      //     },
-      //     {
-      //       code: 3,
-      //       name: "Finance",
-      //       description: "Secteur financier",
-      //       active: true
-      //     }
-      //   ];
+    }
+
+      // return null;
+  }
+
+  static async save(data: any): Promise<any> {
+    try {
+      return await api.post('/sector', {
+        name: data.name,
+        description: data.description,
+        active: data.active,
+      });
+    } catch (error: any) {
+      if (error.response) {
+        return {
+          status: error.response.status,
+          message: error.response.message,
+        };
       }
-
-      return null;
     }
   }
+
+}
+
+

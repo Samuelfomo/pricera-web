@@ -2,8 +2,7 @@ import Country from '@/frontend/service/country.service.ts';
 
 export const fetchCountriesData = async (): Promise<any[]> => {
   try {
-    const result = await Country.getAll();
-    const countryEntries = result;
+    const countryEntries = await Country.getAll();
     // ... transformation des données
     console.log(countryEntries);
     return countryEntries.map((entry: any) => ({

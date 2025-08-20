@@ -7,6 +7,7 @@ import Country from './frontend/view/country.vue';
 import User from './frontend/view/user.vue'
 import Sector from './frontend/view/sector.vue';
 import Universe from './frontend/view/universe.vue';
+import Product from './frontend/view/product.vue';
 const routes = [
     {
         path: '/',
@@ -57,6 +58,11 @@ const routes = [
       path: '/universe',
       name: 'universe',
       component: Universe
+    },
+    {
+      path: '/product',
+      name: 'product',
+      component: Product
     }
 ]
 

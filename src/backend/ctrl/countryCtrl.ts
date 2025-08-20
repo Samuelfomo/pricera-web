@@ -132,7 +132,7 @@ router.post('/', async (req: Request, res: Response) => {
       if (!name) {
         return R.handleError(res, HttpStatus.BAD_REQUEST, {
           code: 'name_required',
-          message: 'UniverseEntry name is required',
+          message: 'Country name is required',
         });
       }
       const result = await CountryService.save(req.body);

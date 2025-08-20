@@ -22,7 +22,7 @@ export default class SectorService {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          name: sector.name, description: sector.description, active: sector.active
+          name: sector.name, description: sector.description, active: sector.active,
         })
       })
       console.log(response)

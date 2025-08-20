@@ -3,7 +3,7 @@ import api from '../tools/api';
 export class ProductService {
   static async getAll(): Promise<any[] | null> {
     try {
-      console.log('Appel API externe vers /survey');
+      console.log('Appel API externe vers /product');
 
       const response = await api.get('/product');
       console.log('Réponse API:', response.status, response.data);
