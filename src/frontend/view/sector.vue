@@ -522,8 +522,8 @@ const filteredSectors = computed(() => {
   if (searchTerm.value) {
     const term = searchTerm.value.toLowerCase();
     filtered = filtered.filter(sector =>
-      sector.name.toLowerCase().includes(term) ||
-      sector.description.toLowerCase().includes(term)
+      sector.name.includes(term) ||
+      sector.description.includes(term)
     );
   }
 
@@ -631,8 +631,8 @@ const validateForm = (): string | null => {
   // Vérifier les doublons
   const existingSectors = sectors.value.find(sector =>
     sector.id !== formData.value.id && (
-      sector.name.toLowerCase() === formData.value.name?.toLowerCase() ||
-      sector.description.toLowerCase() === formData.value.description?.toLowerCase()
+      sector.name === formData.value.name?.toLowerCase() ||
+      sector.description === formData.value.description?.toLowerCase()
       )
   );
 

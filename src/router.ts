@@ -8,11 +8,24 @@ import User from './frontend/view/user.vue'
 import Sector from './frontend/view/sector.vue';
 import Universe from './frontend/view/universe.vue';
 import Product from './frontend/view/product.vue';
+import Auth from './frontend/view/auth.vue';
+import otpPage from './frontend/view/otpPage.vue';
+import Survey from './frontend/view/survey.vue';
 const routes = [
     {
         path: '/',
+        name: 'auth',
+        component: Auth
+    },
+    {
+        path: '/home',
         name: 'home',
         component: Home
+    },
+    {
+        path: '/otpPage',
+        name: 'otpPage',
+        component: otpPage
     },
     {
         path: '/lexicon',
@@ -63,6 +76,11 @@ const routes = [
       path: '/product',
       name: 'product',
       component: Product
+    },
+    {
+      path: '/survey',
+      name: 'survey',
+      component: Survey
     }
 ]
 

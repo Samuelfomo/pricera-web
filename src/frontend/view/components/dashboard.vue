@@ -5,7 +5,7 @@
   >
     <!-- Section Logo -->
     <div
-        @click="router.push('/home')"
+        @click="router.push('/auth')"
         class="logo-section p-4 flex items-center border-b border-[#87D04C] cursor-pointer"
     >
 

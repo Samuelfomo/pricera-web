@@ -39,7 +39,7 @@ export default class UniverseService {
         response: await response.json(),
       };
     } catch (error: any){
-      console.log("Erreur lors de l'enregistrement du univers :", error);
+      console.log("Erreur lors de l'enregistrement de l'univers :", error);
       return {
         response: error.message,
         status: 500,

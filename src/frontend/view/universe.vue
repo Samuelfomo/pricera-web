@@ -145,9 +145,15 @@
                   </span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    {{ universe.sector.map(item => item.toString()).join(', ')}}
+                <div class="flex flex-wrap gap-1">
+                  <span
+                    v-for="sect in universe.sector"
+                    :key="sect"
+                    class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800"
+                  >
+                    {{ sect }}
                   </span>
+                </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right">
                 <div class="flex justify-end">
@@ -190,7 +196,6 @@
                           @click="copyUniverse(universe.name)"
                           class="flex items-center w-full px-4 py-2 text-sm text-slate-700 hover:bg-green-50 hover:text-green-600 transition-colors"
                         >
-
                           {{ copiedText === universe.name ? "✅ Nom copié" : "📋 Copier Nom" }}
                         </button>
 
@@ -224,8 +229,7 @@
           </svg>
           <h3 class="text-xl font-semibold text-slate-900 mb-2">Aucun univers trouvé</h3>
           <p class="text-slate-500 mb-6">
-            {{ searchTerm ? 'Aucun univers' +
-            ' ne correspond à votre recherche.' : 'Commencez par ajouter votre premier univers.' }}
+            {{ searchTerm ? 'Aucun univers ne correspond à votre recherche.' : 'Commencez par ajouter votre premier univers.' }}
           </p>
           <button
             v-if="!searchTerm"
@@ -306,7 +310,7 @@
           <!-- En-tête du modal -->
           <div class="flex items-center justify-between mb-6">
             <h2 class="text-2xl font-bold text-slate-900">
-              {{ isEditMode ? 'Modifier le univers' : 'Ajouter un nouveau univers' }}
+              {{ isEditMode ? 'Modifier l\'univers' : 'Ajouter un nouvel univers' }}
             </h2>
             <button
               @click="closeModal"
@@ -320,11 +324,11 @@
 
           <!-- Formulaire -->
           <form @submit.prevent="saveUniverse" class="space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- Nom du univers -->
-              <div class="md:col-span-2">
+            <div class="grid grid-cols-1 gap-6">
+              <!-- Nom de l'univers -->
+              <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">
-                  Nom de univers <span class="text-red-500">*</span>
+                  Nom de l'univers <span class="text-red-500">*</span>
                 </label>
                 <input
                   v-model="formData.name"
@@ -335,20 +339,90 @@
                 >
               </div>
 
-              <!-- description -->
+              <!-- Description -->
               <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">
                   Description <span class="text-red-500">*</span>
                 </label>
-                <input
+                <textarea
                   v-model="formData.description"
-                  type="text"
                   required
-                  class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                  placeholder="Ex: Medicament pour soins"
-                >
+                  rows="3"
+                  class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none"
+                  placeholder="Ex: Médicaments pour soins de santé"
+                ></textarea>
+              </div>
+
+              <!-- Sélection des secteurs -->
+              <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">
+                  Secteurs <span class="text-red-500">*</span>
+                </label>
+
+                <!-- Secteurs sélectionnés (affichage) -->
+                <div v-if="formData.sector && formData.sector.length > 0" class="mb-3 p-3 bg-slate-50 rounded-lg border">
+                  <div class="flex flex-wrap gap-2">
+                    <span
+                      v-for="(selectedSector, index) in formData.sector"
+                      :key="index"
+                      class="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium"
+                    >
+                      {{ selectedSector }}
+                      <button
+                        type="button"
+                        @click="removeSector(index)"
+                        class="ml-1 text-blue-600 hover:text-blue-800 hover:bg-blue-200 rounded-full p-1"
+                      >
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                      </button>
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Sélecteur de secteurs -->
+                <div class="relative">
+                  <select
+                    v-model="selectedSectorToAdd"
+                    @change="addSector"
+                    class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white"
+                  >
+                    <option value="">Sélectionner un secteur à ajouter...</option>
+                    <option
+                      v-for="sector in availableSectors"
+                      :key="sector.id"
+                      :value="sector.name"
+                      :disabled="formData.sector && formData.sector.includes(sector.name)"
+                    >
+                      {{ sector.name }}
+                    </option>
+                  </select>
+                </div>
+
+                <!-- Message d'aide -->
+                <p class="mt-2 text-sm text-slate-500">
+                  Sélectionnez au moins un secteur pour cet univers
+                </p>
+
+                <!-- Chargement des secteurs -->
+                <div v-if="loadingSectors" class="mt-2 text-sm text-blue-600 flex items-center">
+                  <svg class="animate-spin w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                  </svg>
+                  Chargement des secteurs...
+                </div>
+
+                <!-- Erreur de chargement des secteurs -->
+                <div v-if="sectorError" class="mt-2 text-sm text-red-600 flex items-center">
+                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  {{ sectorError }}
+                </div>
               </div>
             </div>
+
             <!-- Actions du formulaire -->
             <div class="flex justify-end gap-3 pt-4 border-t border-slate-200">
               <button
@@ -360,7 +434,7 @@
               </button>
               <button
                 type="submit"
-                :disabled="isSaving"
+                :disabled="isSaving || !isFormValid"
                 class="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
               >
                 <svg v-if="isSaving" class="animate-spin w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -421,22 +495,32 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue';
 import Header from '@/frontend/view/components/header.vue';
 import Dashboard from '@/frontend/view/components/dashboard.vue';
 
-// Interface pour les universes
+// Interface pour les univers
 interface UniverseEntry {
   id: string;
   name: string;
   description: string;
-  sector: String[];
+  sector: string[];
+}
+
+// Interface pour les secteurs (selon votre structure existante)
+interface Sector {
+  id: string;
+  name: string;
 }
 
 // États réactifs principaux
 const universes = ref<UniverseEntry[]>([]);
+const availableSectors = ref<Sector[]>([]);
+const loadingSectors = ref(false);
+const sectorError = ref<string | null>(null);
+const selectedSectorToAdd = ref('');
+
 const isLoading = ref(false);
 const loadError = ref<string | null>(null);
 const successMessage = ref<string | null>(null);
@@ -445,7 +529,7 @@ const sortKey = ref<keyof UniverseEntry>('name');
 const sortDirection = ref<'asc' | 'desc'>('asc');
 const currentPage = ref(1);
 const itemsPerPage = ref(10);
-const copiedText = ref("")
+const copiedText = ref('');
 
 // États des modals
 const showModal = ref(false);
@@ -463,15 +547,60 @@ const hoveredRowId = ref<string | null>(null);
 const formData = ref<Partial<UniverseEntry>>({
   name: '',
   description: '',
-  // sector: '',
+  sector: [],
 });
 
 // Colonnes du tableau
 const columns = [
   { key: 'name' as keyof UniverseEntry, label: 'Nom univers' },
   { key: 'description' as keyof UniverseEntry, label: 'Description' },
-  { key: 'sector' as keyof UniverseEntry, label: 'Secteur' },
+  { key: 'sector' as keyof UniverseEntry, label: 'Secteurs' },
 ];
+
+// Computed pour la validation du formulaire
+const isFormValid = computed(() => {
+  return !!(
+    formData.value.name?.trim() &&
+    formData.value.description?.trim() &&
+    formData.value.sector &&
+    formData.value.sector.length > 0
+  );
+});
+
+// Fonctions pour la gestion des secteurs
+const loadSectors = async () => {
+  try {
+    loadingSectors.value = true;
+    sectorError.value = null;
+
+    // Appelez votre API existante pour les secteurs
+    availableSectors.value = await fetchSectorsData(); // Utilisez votre fonction existante
+
+  } catch (error) {
+    console.error('Erreur lors du chargement des secteurs:', error);
+    sectorError.value = 'Impossible de charger les secteurs';
+  } finally {
+    loadingSectors.value = false;
+  }
+};
+
+const addSector = () => {
+  if (selectedSectorToAdd.value && formData.value.sector) {
+    if (!formData.value.sector.includes(selectedSectorToAdd.value)) {
+      formData.value.sector.push(selectedSectorToAdd.value);
+    }
+    selectedSectorToAdd.value = '';
+  } else if (selectedSectorToAdd.value && !formData.value.sector) {
+    formData.value.sector = [selectedSectorToAdd.value];
+    selectedSectorToAdd.value = '';
+  }
+};
+
+const removeSector = (index: number) => {
+  if (formData.value.sector) {
+    formData.value.sector.splice(index, 1);
+  }
+};
 
 // Fonctions pour le dropdown
 const toggleDropdown = (universeId: string) => {
@@ -483,21 +612,20 @@ const closeDropdown = () => {
 };
 
 // Fonction pour copier un univers
-const copyUniverse = async (text: string ) => {
+const copyUniverse = async (text: string) => {
   try {
     await navigator.clipboard.writeText(String(text));
     copiedText.value = String(text);
 
     setTimeout(() => {
-      copiedText.value = "";
+      copiedText.value = '';
     }, 2000);
   } catch (err) {
-    alert("❌ Impossible de copier");
+    alert('❌ Impossible de copier');
   }
 };
 
-
-// Fonction pour charger les universes
+// Fonction pour charger les univers
 const loadUniverse = async () => {
   try {
     isLoading.value = true;
@@ -540,30 +668,31 @@ watch(successMessage, (newMessage) => {
 
 // Computed properties
 const filteredUniverses = computed(() => {
-   return universes.value;
+  let filtered = universes.value;
 
-  // // Filtrage par terme de recherche
-  // if (searchTerm.value) {
-  //   const term = searchTerm.value.toLowerCase();
-  //   filtered = filtered.filter(universe =>
-  //     universe.name.toLowerCase().includes(term) ||
-  //     universe.description.toLowerCase().includes(term) ||
-  //     universe.sector.toLowerCase().includes(term)
-  //   );
-  // }
+  // Filtrage par terme de recherche
+  if (searchTerm.value) {
+    const term = searchTerm.value.toLowerCase();
+    filtered = filtered.filter(universe =>
+      universe.name.toLowerCase().includes(term) ||
+      universe.description.toLowerCase().includes(term) ||
+      universe.sector.some(sector => sector.toLowerCase().includes(term))
+    );
+  }
 
-  // // Tri
-  // filtered.sort((a, b) => {
-  //   const aVal = String(a[sortKey.value] || '').toLowerCase();
-  //   const bVal = String(b[sortKey.value] || '').toLowerCase();
-  //
-  //   if (sortDirection.value === 'asc') {
-  //     return aVal.localeCompare(bVal);
-  //   } else {
-  //     return bVal.localeCompare(aVal);
-  //   }
-  // });
+  // Tri
+  filtered.sort((a, b) => {
+    const aVal = String(a[sortKey.value] || '').toLowerCase();
+    const bVal = String(b[sortKey.value] || '').toLowerCase();
 
+    if (sortDirection.value === 'asc') {
+      return aVal.localeCompare(bVal);
+    } else {
+      return bVal.localeCompare(aVal);
+    }
+  });
+
+  return filtered;
 });
 
 const totalPages = computed(() =>
@@ -602,19 +731,35 @@ const sort = (key: keyof UniverseEntry) => {
 };
 
 // Gestion des modals
-const openAddModal = () => {
+const openAddModal = async () => {
   isEditMode.value = false;
   formData.value = {
     name: '',
     description: '',
+    sector: [],
   };
+
+  // Charger les secteurs si nécessaire
+  if (availableSectors.value.length === 0) {
+    await loadSectors();
+  }
+
   showModal.value = true;
   clearMessages();
 };
 
-const openEditModal = (universe: UniverseEntry) => {
+const openEditModal = async (universe: UniverseEntry) => {
   isEditMode.value = true;
-  formData.value = { ...universe };
+  formData.value = {
+    ...universe,
+    sector: [...universe.sector] // Clone du tableau pour éviter la référence
+  };
+
+  // Charger les secteurs si nécessaire
+  if (availableSectors.value.length === 0) {
+    await loadSectors();
+  }
+
   showModal.value = true;
   clearMessages();
 };
@@ -642,29 +787,31 @@ const closeModal = () => {
   formData.value = {
     name: '',
     description: '',
-    // sector: '',
+    sector: [],
   };
+  selectedSectorToAdd.value = '';
 };
 
 // Validation du formulaire
 const validateForm = (): string | null => {
   if (!formData.value.name?.trim()) {
-    return 'Le nom de univers est obligatoire';
+    return 'Le nom de l\'univers est obligatoire';
   }
-  // if (!formData.value.sector?.trim()) {
-  //   return 'Le secteur  est obligatoire';
-  // }
+  if (!formData.value.description?.trim()) {
+    return 'La description est obligatoire';
+  }
+  if (!formData.value.sector || formData.value.sector.length === 0) {
+    return 'Au moins un secteur doit être sélectionné';
+  }
 
-  // Vérifier les doublons (sauf pour le pays en cours d'édition)
+  // Vérifier les doublons (sauf pour l'univers en cours d'édition)
   const existingUniverse = universes.value.find(universe =>
-      universe.id !== formData.value.id && (
-        universe.name.toLowerCase() === formData.value.name?.toLowerCase() ||
-        universe.description.toLowerCase() === formData.value.description?.toLowerCase()
-      )
+    universe.id !== formData.value.id &&
+    universe.name.toLowerCase() === formData.value.name?.toLowerCase()
   );
 
   if (existingUniverse) {
-    return 'Un univer avec ce nom, description existe déjà';
+    return 'Un univers avec ce nom existe déjà';
   }
 
   return null;
@@ -674,6 +821,7 @@ const validateForm = (): string | null => {
 const saveUniverse = async () => {
   try {
     isSaving.value = true;
+    clearMessages();
 
     // Validation
     const validationError = validateForm();
@@ -687,36 +835,36 @@ const saveUniverse = async () => {
       const index = universes.value.findIndex(c => c.id === formData.value.id);
       if (index !== -1) {
         universes.value[index] = { ...formData.value } as UniverseEntry;
-        successMessage.value = `L univer "${formData.value.name}" a été modifié avec succès`;
+        successMessage.value = `L'univers "${formData.value.name}" a été modifié avec succès`;
+        showNotification(`Univers "${formData.value.name}" modifié avec succès`, 'success');
       }
+      closeModal();
     } else {
-      // Ajout
+      // Ajout - Appel à votre service
       try {
-        isSaving.value = true;
-
         const response = await UniverseService.save(formData.value);
 
         if (response.status === 201) {
-          const createUniverse: UniverseEntry = await response.response; // <-- dépend de ton contrôleur
-          universe.value.unshift(createUniverse);
+          const createdUniverse: UniverseEntry = await response.response;
+          universes.value.unshift(createdUniverse);
 
-          successMessage.value = `Univer "${createUniverse.name}"  ajouté avec succès`;
-          showNotification(`Univer "${createUniverse.name}" ajouté avec succès`);
+          successMessage.value = `Univers "${createdUniverse.name}" ajouté avec succès`;
+          showNotification(`Univers "${createdUniverse.name}" ajouté avec succès`, 'success');
+          closeModal();
         } else {
-          loadError.value = "Erreur lors de la création de univer";
+          loadError.value = 'Erreur lors de la création de l\'univers';
         }
-
-        closeModal();
       } catch (error) {
-        loadError.value = error instanceof Error ? error.message : "Erreur lors de la sauvegarde";
-      } finally {
-        isSaving.value = false;
+        console.error('Erreur lors de la sauvegarde:', error);
+        loadError.value = error instanceof Error ? error.message : 'Erreur lors de la sauvegarde';
       }
     }
   } catch (error) {
-    loadError.value = error instanceof Error ? error.message : "Erreur lors de la sauvegarde";
+    loadError.value = error instanceof Error ? error.message : 'Erreur lors de la sauvegarde';
+  } finally {
+    isSaving.value = false;
   }
-}
+};
 
 // Gestion de la suppression
 const confirmDeleteUniverse = (universe: UniverseEntry) => {
@@ -736,11 +884,15 @@ const deleteUniverse = async () => {
   try {
     isDeleting.value = true;
 
+    // Appel au service de suppression
+    // await UniverseService.delete(universeToDelete.value.id);
+
     const index = universes.value.findIndex(c => c.id === universeToDelete.value!.id);
     if (index !== -1) {
       const deletedUniverseName = universes.value[index].name;
       universes.value.splice(index, 1);
-      successMessage.value = `Univer "${deletedUniverseName}" supprimé avec succès`;
+      successMessage.value = `Univers "${deletedUniverseName}" supprimé avec succès`;
+      showNotification(`Univers "${deletedUniverseName}" supprimé avec succès`, 'success');
 
       // Ajuster la pagination si nécessaire
       if (paginatedUniverse.value.length === 0 && currentPage.value > 1) {
@@ -768,7 +920,7 @@ const handleKeydown = (event: KeyboardEvent) => {
     }
   }
 
-  // Ctrl+N pour nouveau pays
+  // Ctrl+N pour nouvel univers
   if (event.ctrlKey && event.key === 'n') {
     event.preventDefault();
     openAddModal();
@@ -776,12 +928,9 @@ const handleKeydown = (event: KeyboardEvent) => {
 };
 
 // Chargement initial et événements
-onMounted(() => {
-  loadUniverse();
-
-  // // Si pas de données, charger des exemples après 2 secondes
-  // setTimeout(() => {
-  // }, 2000);
+onMounted(async () => {
+  await loadUniverse();
+  await loadSectors(); // Charger les secteurs au démarrage
 
   // Écouter les raccourcis clavier
   document.addEventListener('keydown', handleKeydown);
@@ -789,9 +938,9 @@ onMounted(() => {
 
 // Nettoyage
 import { onUnmounted } from 'vue';
-import universe from '@/frontend/view/universe.vue';
 import { fetchUniverseData } from '@/frontend/Ctr/universe.ts';
 import UniverseService from '@/frontend/service/universe.service.ts';
+import { fetchSectorsData } from '@/frontend/Ctr/sector.ts';
 
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown);
@@ -963,5 +1112,14 @@ code {
   width: 100px;
   height: 100px;
 }
-</style>
 
+/* Styles pour les secteurs sélectionnés */
+.sector-tag {
+  background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%);
+  border: 1px solid #a78bfa;
+}
+
+.sector-tag:hover {
+  background: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 100%);
+}
+</style>

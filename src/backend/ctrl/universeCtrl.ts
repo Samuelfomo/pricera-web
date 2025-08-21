@@ -69,4 +69,72 @@ router.get('/', async (_req: Request, res: Response) => {
   }
 });
 
+router.post('/', async (req: Request, res: Response) => {
+  try {
+    const { name, description, sector } = req.body;
+    if (!name) {
+      return R.handleError(res, HttpStatus.BAD_REQUEST, {
+        code: 'name_required',
+        message: 'Universe name is required',
+      });
+    }
+    if (!sector) {
+      return R.handleError(res, HttpStatus.BAD_REQUEST, {
+        code: 'sectors_required',
+        message: 'Universe sectors is required',
+      });
+    }
+    const data = { name, description, sector };
+    console.log(data);
+    // if (!description) {
+    //   return R.handleError(res, HttpStatus.BAD_REQUEST, {
+    //     code: 'description_required',
+    //     message: 'Universe description is required',
+    //   });
+    // }
+    const result = await UniverseService.save(data);
+
+// Vérifier que l'API a répondu correctement
+    if (result.status !== HttpStatus.CREATED) {
+      console.log(result);
+      return R.handleError(res, HttpStatus.BAD_REQUEST, {
+        code: 'universe_creation_failed',
+        message: 'Failed to create universe',
+      });
+    }
+
+    const response = result.data.data;
+
+    console.log(response);
+
+    const universe = new Universe()
+      .setName(response.name)
+      .setDescription(response.description)
+      .setSector(response.sector)
+      .setGuid(response.guid);
+
+    await universe.save();
+
+    console.log(`univers cree: ${universe.getName()} - ${universe.getDescription()} (GUID: ${universe.getGuid()})`);
+
+    R.handleSuccess(res, universe.toJSON());
+
+  } catch (error: any) {
+    console.log('Erreur lors de la creation de univers', error.message);
+    if (error.message.includes('already exists')) {
+      R.handleError(res, HttpStatus.CONFLICT, {
+        code: 'univers_already_exists',
+        message: error.message,
+      });
+    } else if (error.message.includes('name')) {
+      R.handleError(res, HttpStatus.BAD_REQUEST, {
+        code: 'invalid_name',
+        message: error.message,
+      });
+
+    }
+  }
+})
+
+
 export default router;

@@ -81,7 +81,7 @@ router.post('/', async (req: Request, res: Response) => {
     const data = req.body;
     const result = await LexiconService.save(data);
     if (result.status !== HttpStatus.CREATED) {
-      return R.handleError(res, result.status, result.error);
+      return R.handleError(res, result.status, result.error );
     }
     const response = result.data.data;
 
