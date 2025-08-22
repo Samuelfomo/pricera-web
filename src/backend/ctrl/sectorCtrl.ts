@@ -97,7 +97,7 @@ router.post('/', async (req: Request, res: Response) => {
     if (actif) sector.setActive(actif);
 
     await sector.save();
-    console.log(`pays cree: ${name} - ${description} (GUID: ${sector.getGuid()}`);
+    console.log(`Secteur cree: ${name} - ${description} (GUID: ${sector.getGuid()}`);
     R.handleSuccess(res, sector.toJSON());
   } catch (error: any) {
     console.log('Erreur lors de la creation de sector', error.message);

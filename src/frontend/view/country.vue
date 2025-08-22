@@ -347,7 +347,6 @@
                   placeholder="Ex: France"
                 >
               </div>
-
               <!-- Code -->
               <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">
@@ -361,7 +360,6 @@
                   placeholder="Ex: 237"
                 >
               </div>
-
               <!-- ISO -->
               <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">
@@ -375,21 +373,20 @@
                   placeholder="Ex: FR"
                 >
               </div>
-
               <!-- Timezone -->
               <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">
-                 Timezone <span class="text-red-500">*</span>
+                  Timezone <span class="text-red-500">*</span>
                 </label>
                 <input
                   v-model="formData.timezone"
                   type="text"
                   required
-                  class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  readonly
+                  class="w-full px-4 py-3 border border-slate-300 rounded-xl bg-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                   placeholder="Ex: Europe/Paris"
                 >
               </div>
-
               <!-- Mobile Regex -->
               <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">
@@ -399,23 +396,24 @@
                   v-model="formData.mobileRegex"
                   type="text"
                   required
-                  class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-mono text-sm"
+                  readonly
+                  class="w-full px-4 py-3 border border-slate-300 rounded-xl bg-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-mono text-sm"
                   placeholder="Ex: ^0[6-7][0-9]{8}$"
                 >
               </div>
-
               <!-- Drapeau -->
               <div class="md:col-span-2">
                 <label class="block text-sm font-semibold text-slate-700 mb-2">
-                  URL du drapeau
+                  Drapeau
                 </label>
                 <input
                   v-model="formData.flag"
-                  type="url"
-                  class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                  placeholder="https://example.com/flag.png"
+                  type="text"
+                  readonly
+                  class="w-full px-4 py-3 border border-slate-300 rounded-xl bg-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-xl"
+                  placeholder="🇫🇷"
                 >
-                <p class="text-xs text-slate-500 mt-1">URL vers l'image du drapeau</p>
+                <p class="text-xs text-slate-500 mt-1">Emoji du drapeau généré automatiquement</p>
               </div>
             </div>
 
@@ -490,7 +488,7 @@ import Header from '@/frontend/view/components/header.vue';
 import Dashboard from '@/frontend/view/components/dashboard.vue';
 import { fetchCountriesData } from '@/frontend/Ctr/country.ts';
 import Country from '@/frontend/service/country.service.ts'
-
+import { PhoneNumberUtil } from 'google-libphonenumber'
 // Interface pour les pays
 interface CountryEntry {
   id: string;
@@ -743,7 +741,55 @@ const validateForm = (): string | null => {
   return null;
 };
 
-// Fonction pour copier un univers
+const phoneUtil = PhoneNumberUtil.getInstance()
+// Vérifier validité du mobile avec libphonenumber (et récupérer regex simplifiée)
+function generateRegex(iso: string): string {
+  try {
+    const metadata = phoneUtil.getMetadataForRegion(iso.toUpperCase());
+    if (!metadata) return '';
+    return metadata.getMobile().getNationalNumberPattern();
+  } catch (e) {
+    console.error("Impossible de générer la regex pour", iso, e);
+    return '';
+  }
+}
+
+// Récupérer timezone depuis WorldTimeAPI
+async function fetchTimezone(iso) {
+  try {
+    const res = await fetch('https://worldtimeapi.org/api/timezone')
+    const timezones = await res.json()
+    const tz = timezones.find(tz => tz.toUpperCase().includes(iso.toUpperCase()))
+    return tz || ''
+  } catch (e) {
+    return ''
+  }
+}
+
+
+// Convertir ISO en emoji drapeau
+function isoToFlagEmoji(iso) {
+  return iso
+    .toUpperCase()
+    .replace(/./g, char =>
+      String.fromCodePoint(127397 + char.charCodeAt())
+    )
+}
+
+// Surveille les changements du code ISO
+watch(() => formData.value.iso, async (newIso) => {
+  if (newIso) {
+    const iso = newIso.toUpperCase()
+    formData.value.flag = isoToFlagEmoji(iso)
+    formData.value.timezone = await fetchTimezone(iso)
+    formData.value.mobileRegex = generateRegex(iso)
+  } else {
+    formData.value.flag = ''
+    formData.value.timezone = ''
+    formData.value.mobileRegex = ''
+  }
+})
+// Fonction pour copier un PAYS
 const copyCountry = async (text: string ) => {
   try {
     await navigator.clipboard.writeText(String(text));

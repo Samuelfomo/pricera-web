@@ -12,7 +12,12 @@
       <div class="header-actions">
         <button @click="openCreateModal" class="btn-create">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M12 5v14m-7-7h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path
+              d="M12 5v14m-7-7h14"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
           </svg>
           Ajouter un produit
         </button>
@@ -24,7 +29,7 @@
       <div class="stat-card">
         <div class="stat-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"/>
+            <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
           </svg>
         </div>
         <div class="stat-content">
@@ -36,7 +41,9 @@
       <div class="stat-card">
         <div class="stat-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            <path
+              d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+            />
           </svg>
         </div>
         <div class="stat-content">
@@ -48,7 +55,11 @@
       <div class="stat-card">
         <div class="stat-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" stroke="currentColor" stroke-width="2"/>
+            <path
+              d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"
+              stroke="currentColor"
+              stroke-width="2"
+            />
           </svg>
         </div>
         <div class="stat-content">
@@ -59,7 +70,7 @@
     </div>
 
     <!-- Loading state -->
-    <div v-if="loading" class="loading">
+    <div v-if="loading && products.length === 0" class="loading">
       <div class="loading-spinner"></div>
       <p>Chargement des produits...</p>
     </div>
@@ -68,14 +79,28 @@
     <div v-else-if="error" class="error">
       <div class="error-icon">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/>
+          <path
+            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+          />
         </svg>
       </div>
       <p>Erreur lors du chargement : {{ error }}</p>
       <button @click="fetchProducts" class="retry-btn">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <path d="M1 4v6h6M23 20v-6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path
+            d="M1 4v6h6M23 20v-6h-6"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
         Réessayer
       </button>
@@ -83,283 +108,377 @@
 
     <!-- Products section -->
     <div v-else class="products-section">
-      <!-- Products grid -->
-      <div v-if="products.length > 0" class="products-grid">
-        <ProductCard
-          v-for="product in products"
-          :key="product.barcode || product.id"
-          :product="transformProduct(product)"
-          @product-click="openDetailModal"
-        />
-      </div>
-
       <!-- Empty state -->
-      <div v-else class="empty-state">
+      <div v-if="products.length === 0" class="empty-state">
         <div class="empty-icon">
           <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
-            <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path
+              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         </div>
         <h3>Aucun produit trouvé</h3>
         <p>Commencez par ajouter votre premier produit</p>
         <button @click="openCreateModal" class="btn-create">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path d="M12 5v14m-7-7h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path
+              d="M12 5v14m-7-7h14"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
           </svg>
           Ajouter un produit
         </button>
+      </div>
+
+      <!-- Products grid -->
+      <div v-else class="products-grid">
+        <ProductCard
+          v-for="product in products"
+          :key="getProductKey(product)"
+          :product="transformProduct(product)"
+          @product-click="openDetailModal"
+          @edit="openEditModal"
+          @delete="openDeleteModal"
+        />
       </div>
     </div>
 
     <!-- Modals -->
     <ProductDetailModal
-      v-if="showDetailModal"
-      :product="selectedProduct"
-      :isVisible="showDetailModal"
+      v-if="showDetailModal && selectedProduct"
+      :product="transformProduct(selectedProduct)"
+      :is-visible="showDetailModal"
       @close="closeDetailModal"
       @edit="openEditModal"
     />
 
     <ProductCrudModal
       v-if="showCrudModal"
-      :isVisible="showCrudModal"
+      :is-visible="showCrudModal"
       :mode="crudMode"
-      :product="selectedProduct"
+      :product="selectedProduct ? transformProduct(selectedProduct) : null"
       @close="closeCrudModal"
       @submit="handleCrudSubmit"
       @delete="handleDelete"
     />
 
-    <!-- Action buttons flottants (optionnel pour mobile) -->
+    <!-- Floating Action Button (mobile uniquement) -->
     <div class="floating-actions">
-      <button @click="openCreateModal" class="fab">
+      <button
+        @click="openCreateModal"
+        class="fab"
+        aria-label="Ajouter un produit"
+      >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M12 5v14m-7-7h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path
+            d="M12 5v14m-7-7h14"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
         </svg>
       </button>
+    </div>
+
+    <!-- Toast notifications -->
+    <div v-if="notification" class="notification" :class="notification.type">
+      <span>{{ notification.message }}</span>
+      <button @click="clearNotification" class="notification-close">×</button>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
+<script>
 import { ref, onMounted, computed } from 'vue'
 import ProductService from '@/frontend/service/product.service'
 import ProductCard from '@/frontend/view/components/productCard.vue'
-// import formProduct from '@/frontend/view/components/formProduct.vue'
-// import ProductDetailModal from '@/frontend/view/components/ProductDetailModal.vue'
-// import ProductCrudModal from '@/frontend/view/components/ProductCrudModal.vue'
+import detailProduct from '@/frontend/view/components/detailProduct.vue'
+import formProduct from '@/frontend/view/components/formProduct.vue'
 import Dashboard from '@/frontend/view/components/dashboard.vue'
 
-export interface Product {
-  id: number;
-  barcode: string;
-  name: string;
-  image: string | null;
-  universes: Array<{
-    nom: string;
-    sectors: Array<{
-      nom: string;
-      description: string | null;
-    }>;
-  }>;
-  nomenclatures: string[];
-}
+export default {
+  name: 'ProductsPage',
+  components: {
+    ProductCard,
+    detailProduct,
+    formProduct,
+    Dashboard
+  },
+  setup() {
+    // State
+    const products = ref([])
+    const loading = ref(false)
+    const error = ref(null)
 
-const products = ref<Product[]>([])
-const loading = ref(false)
-const error = ref<string | null>(null)
+    // Modal states
+    const showDetailModal = ref(false)
+    const showCrudModal = ref(false)
+    const selectedProduct = ref(null)
+    const crudMode = ref('create')
 
-// Modal states
-const showDetailModal = ref(false)
-const showCrudModal = ref(false)
-const selectedProduct = ref<Product | null>(null)
-const crudMode = ref<'create' | 'edit' | 'delete'>('create')
+    // Notification state
+    const notification = ref(null)
 
-// Computed properties pour les stats
-const uniqueUniverses = computed(() => {
-  const universes = new Set()
-  products.value.forEach(product => {
-    product.universes.forEach(universe => {
-      universes.add(universe.nom)
+    // Computed properties pour les stats
+    const uniqueUniverses = computed(() => {
+      const universes = new Set()
+      products.value.forEach(product => {
+        product.universes?.forEach(universe => {
+          universes.add(universe.nom)
+        })
+      })
+      return universes.size
     })
-  })
-  return universes.size
-})
 
-const productsWithImages = computed(() => {
-  return products.value.filter(product => product.image).length
-})
+    const productsWithImages = computed(() => {
+      return products.value.filter(product => product.image).length
+    })
 
-const fetchProducts = async () => {
-  loading.value = true
-  error.value = null
+    // Utility functions
+    const getProductKey = (product) => {
+      return product.barcode || product.id || `product-${Math.random()}`
+    }
 
-  try {
-    products.value = await ProductService.getAll()
-    console.log("Produits récupérés:", products.value)
-  } catch (err) {
-    error.value = "Impossible de récupérer les produits"
-    console.error("Impossible de récupérer les produits", err)
-  } finally {
-    loading.value = false
-  }
-}
+    const showNotification = (message, type = 'success') => {
+      notification.value = { message, type }
+      setTimeout(() => {
+        notification.value = null
+      }, 5000)
+    }
 
-// Transformer les données du service vers le format attendu par ProductCard
-const transformProduct = (product: Product) => {
-  return {
-    id: product.id,
-    nom: product.name,
-    barecode: product.barcode,
-    nomenclature: product.nomenclatures.join(', '),
-    image: product.image,
-    universes: product.universes.map(universe => ({
-      nom: universe.nom,
-      secteur: universe.sectors.length > 0 ? {
-        nom: universe.sectors.map(s => s.nom).join(', '),
-        description: universe.sectors
-          .filter(s => s.description)
-          .map(s => s.description)
-          .join(', ') || null
-      } : null
-    }))
-  }
-}
+    const clearNotification = () => {
+      notification.value = null
+    }
 
-// Modal handlers
-const openDetailModal = (product: any) => {
-  // Trouver le produit complet dans notre liste
-  const fullProduct = products.value.find(p => p.id === product.id)
-  if (fullProduct) {
-    selectedProduct.value = fullProduct
-    showDetailModal.value = true
-  }
-}
+    // API calls
+    const fetchProducts = async () => {
+      loading.value = true
+      error.value = null
 
-const closeDetailModal = () => {
-  showDetailModal.value = false
-  selectedProduct.value = null
-}
+      try {
+        const data = await ProductService.getAll()
+        products.value = Array.isArray(data) ? data : []
+        console.log("Produits récupérés:", products.value)
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Impossible de récupérer les produits"
+        error.value = errorMessage
+        console.error("Erreur lors de la récupération des produits:", err)
+        showNotification("Erreur lors du chargement des produits", 'error')
+      } finally {
+        loading.value = false
+      }
+    }
 
-const openCreateModal = () => {
-  selectedProduct.value = null
-  crudMode.value = 'create'
-  showCrudModal.value = true
-}
+    // Transformer les données du service vers le format attendu par ProductCard
+    const transformProduct = (product) => {
+      if (!product) return null
 
-const openEditModal = (product: Product) => {
-  selectedProduct.value = product
-  crudMode.value = 'edit'
-  showDetailModal.value = false
-  showCrudModal.value = true
-}
-
-const openDeleteModal = (product: Product) => {
-  selectedProduct.value = product
-  crudMode.value = 'delete'
-  showCrudModal.value = true
-}
-
-const closeCrudModal = () => {
-  showCrudModal.value = false
-  selectedProduct.value = null
-}
-
-// CRUD operations
-const handleCrudSubmit = async (formData: any) => {
-  loading.value = true
-
-  try {
-    if (formData.mode === 'create') {
-      // Appeler l'API pour créer le produit
-      console.log('Création du produit:', formData.data)
-      // await ProductService.create(formData.data)
-
-      // Simuler la création pour l'exemple
-      const newProduct: Product = {
-        id: Math.max(...products.value.map(p => p.id), 0) + 1,
-        barcode: formData.data.barcode || '',
-        name: formData.data.commercialName || formData.data.nomenclatures?.items?.[0] || `Produit-${Date.now()}`,
-        image: formData.data.image,
-        nomenclatures: formData.data.nomenclatures?.items || [],
-        universes: formData.data.universes?.items?.map((u: any) => ({
-          nom: u.name,
-          sectors: u.sectors?.items?.map((s: any) => ({
-            nom: s.name,
-            description: s.description
-          })) || []
+      return {
+        id: product.id,
+        nom: product.name || 'Produit sans nom',
+        commercialName: product.name,
+        barecode: product.barcode || '',
+        nomenclature: product.nomenclatures?.join(', ') || '',
+        image: product.image,
+        universes: product.universes?.map(universe => ({
+          nom: universe.nom,
+          secteur: universe.sectors?.length > 0 ? {
+            nom: universe.sectors.map(s => s.nom).join(', '),
+            description: universe.sectors
+              .filter(s => s.description)
+              .map(s => s.description)
+              .join(', ') || null
+          } : null
         })) || []
       }
+    }
 
-      products.value.push(newProduct)
+    // Modal handlers
+    const openDetailModal = (productData) => {
+      if (!productData?.id) return
 
-    } else if (formData.mode === 'edit') {
-      // Appeler l'API pour modifier le produit
-      console.log('Modification du produit:', formData.productId, formData.data)
-      // await ProductService.update(formData.productId, formData.data)
-
-      // Simuler la modification pour l'exemple
-      const index = products.value.findIndex(p => p.id === formData.productId)
-      if (index !== -1) {
-        products.value[index] = {
-          ...products.value[index],
-          name: formData.data.commercialName || formData.data.nomenclatures?.items?.[0] || products.value[index].name,
-          barcode: formData.data.barcode || '',
-          image: formData.data.image,
-          nomenclatures: formData.data.nomenclatures?.items || [],
-          universes: formData.data.universes?.items?.map((u: any) => ({
-            nom: u.name,
-            sectors: u.sectors?.items?.map((s: any) => ({
-              nom: s.name,
-              description: s.description
-            })) || []
-          })) || []
-        }
+      const fullProduct = products.value.find(p => p.id === productData.id)
+      if (fullProduct) {
+        selectedProduct.value = fullProduct
+        showDetailModal.value = true
       }
     }
 
-    closeCrudModal()
-
-    // Afficher un message de succès (vous pouvez utiliser une lib comme vue-toastification)
-    console.log(formData.mode === 'create' ? 'Produit créé avec succès!' : 'Produit modifié avec succès!')
-
-  } catch (err) {
-    console.error('Erreur lors de la sauvegarde:', err)
-    error.value = 'Erreur lors de la sauvegarde'
-  } finally {
-    loading.value = false
-  }
-}
-
-const handleDelete = async (productData: any) => {
-  loading.value = true
-
-  try {
-    // Appeler l'API pour supprimer le produit
-    console.log('Suppression du produit:', productData.id)
-    // await ProductService.delete(productData.id)
-
-    // Simuler la suppression pour l'exemple
-    const index = products.value.findIndex(p => p.id === productData.id)
-    if (index !== -1) {
-      products.value.splice(index, 1)
+    const closeDetailModal = () => {
+      showDetailModal.value = false
+      selectedProduct.value = null
     }
 
-    closeCrudModal()
+    const openCreateModal = () => {
+      selectedProduct.value = null
+      crudMode.value = 'create'
+      showCrudModal.value = true
+    }
 
-    console.log('Produit supprimé avec succès!')
+    const openEditModal = (product) => {
+      // Si product est déjà transformé (depuis ProductCard), trouver le produit original
+      const originalProduct = products.value.find(p => p.id === product.id) || product
+      selectedProduct.value = originalProduct
+      crudMode.value = 'edit'
+      showDetailModal.value = false
+      showCrudModal.value = true
+    }
 
-  } catch (err) {
-    console.error('Erreur lors de la suppression:', err)
-    error.value = 'Erreur lors de la suppression'
-  } finally {
-    loading.value = false
+    const openDeleteModal = (product) => {
+      const originalProduct = products.value.find(p => p.id === product.id) || product
+      selectedProduct.value = originalProduct
+      crudMode.value = 'delete'
+      showCrudModal.value = true
+    }
+
+    const closeCrudModal = () => {
+      showCrudModal.value = false
+      selectedProduct.value = null
+    }
+
+    // CRUD operations
+    const handleCrudSubmit = async (formData) => {
+      if (!formData?.data) {
+        showNotification('Données de formulaire invalides', 'error')
+        return
+      }
+
+      loading.value = true
+
+      try {
+        if (formData.mode === 'create') {
+          console.log('Création du produit:', formData.data)
+
+          // Créer un nouvel ID unique
+          const maxId = products.value.length > 0 ? Math.max(...products.value.map(p => p.id)) : 0
+
+          const newProduct = {
+            id: maxId + 1,
+            barcode: formData.data.barcode || '',
+            name: formData.data.commercialName ||
+              (formData.data.nomenclatures?.items?.[0]) ||
+              `Produit-${Date.now()}`,
+            image: formData.data.image || null,
+            nomenclatures: formData.data.nomenclatures?.items || [],
+            universes: formData.data.universes?.items?.map((u) => ({
+              nom: u.name || '',
+              sectors: u.sectors?.items?.map((s) => ({
+                nom: s.name || '',
+                description: s.description || null
+              })) || []
+            })) || []
+          }
+
+          products.value.push(newProduct)
+          showNotification('Produit créé avec succès!')
+
+        } else if (formData.mode === 'edit' && formData.productId) {
+          console.log('Modification du produit:', formData.productId, formData.data)
+
+          const index = products.value.findIndex(p => p.id === formData.productId)
+          if (index !== -1) {
+            products.value[index] = {
+              ...products.value[index],
+              name: formData.data.commercialName ||
+                (formData.data.nomenclatures?.items?.[0]) ||
+                products.value[index].name,
+              barcode: formData.data.barcode || '',
+              image: formData.data.image || null,
+              nomenclatures: formData.data.nomenclatures?.items || [],
+              universes: formData.data.universes?.items?.map((u) => ({
+                nom: u.name || '',
+                sectors: u.sectors?.items?.map((s) => ({
+                  nom: s.name || '',
+                  description: s.description || null
+                })) || []
+              })) || []
+            }
+            showNotification('Produit modifié avec succès!')
+          } else {
+            throw new Error('Produit non trouvé')
+          }
+        }
+
+        closeCrudModal()
+
+      } catch (err) {
+        console.error('Erreur lors de la sauvegarde:', err)
+        const errorMessage = err instanceof Error ? err.message : 'Erreur lors de la sauvegarde'
+        showNotification(errorMessage, 'error')
+      } finally {
+        loading.value = false
+      }
+    }
+
+    const handleDelete = async (productData) => {
+      if (!productData?.id) {
+        showNotification('ID de produit invalide', 'error')
+        return
+      }
+
+      loading.value = true
+
+      try {
+        console.log('Suppression du produit:', productData.id)
+
+        const index = products.value.findIndex(p => p.id === productData.id)
+        if (index !== -1) {
+          const deletedProduct = products.value.splice(index, 1)[0]
+          showNotification(`Produit "${deletedProduct.name}" supprimé avec succès!`)
+        } else {
+          throw new Error('Produit non trouvé')
+        }
+
+        closeCrudModal()
+
+      } catch (err) {
+        console.error('Erreur lors de la suppression:', err)
+        const errorMessage = err instanceof Error ? err.message : 'Erreur lors de la suppression'
+        showNotification(errorMessage, 'error')
+      } finally {
+        loading.value = false
+      }
+    }
+
+    // Lifecycle
+    onMounted(() => {
+      fetchProducts()
+    })
+
+    return {
+      products,
+      loading,
+      error,
+      showDetailModal,
+      showCrudModal,
+      selectedProduct,
+      crudMode,
+      notification,
+      uniqueUniverses,
+      productsWithImages,
+      getProductKey,
+      showNotification,
+      clearNotification,
+      fetchProducts,
+      transformProduct,
+      openDetailModal,
+      closeDetailModal,
+      openCreateModal,
+      openEditModal,
+      openDeleteModal,
+      closeCrudModal,
+      handleCrudSubmit,
+      handleDelete
+    }
+
+    }
   }
-}
-
-onMounted(() => {
-  fetchProducts()
-})
 </script>
 
 <style scoped>
@@ -428,6 +547,12 @@ onMounted(() => {
 .btn-create:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(59, 130, 246, 0.6);
+}
+
+.btn-create:focus {
+  outline: none;
+  ring: 2px solid #3b82f6;
+  ring-offset: 2px;
 }
 
 /* Stats */
@@ -520,8 +645,12 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading p {
@@ -571,6 +700,12 @@ onMounted(() => {
 .retry-btn:hover {
   background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
   transform: translateY(-1px);
+}
+
+.retry-btn:focus {
+  outline: none;
+  ring: 2px solid #ef4444;
+  ring-offset: 2px;
 }
 
 /* Empty state */
@@ -629,6 +764,62 @@ onMounted(() => {
   box-shadow: 0 12px 40px rgba(59, 130, 246, 0.8);
 }
 
+.fab:focus {
+  outline: none;
+  ring: 2px solid #3b82f6;
+  ring-offset: 2px;
+}
+
+/* Notifications */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  padding: 16px 20px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 300px;
+  animation: slideIn 0.3s ease;
+}
+
+.notification.success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.notification.error {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.notification.warning {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  margin-left: auto;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .products-container {
@@ -664,14 +855,58 @@ onMounted(() => {
     justify-content: center;
   }
 
-  .fab {
-    display: none; /* Masquer le FAB sur mobile car le bouton principal est visible */
+  .notification {
+    min-width: auto;
+    right: 16px;
+    left: 16px;
   }
 }
 
 @media (min-width: 769px) {
   .floating-actions {
     display: none; /* Masquer le FAB sur desktop */
+  }
+}
+
+/* Améliorations d'accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  .loading-spinner {
+    animation: none;
+  }
+
+  .stat-card,
+  .btn-create,
+  .fab {
+    transition: none;
+  }
+}
+
+/* Mode sombre (optionnel) */
+@media (prefers-color-scheme: dark) {
+  .products-container {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  }
+
+  .products-header,
+  .products-section,
+  .stat-card,
+  .loading,
+  .error {
+    background: #334155;
+    color: #f1f5f9;
+  }
+
+  .page-title {
+    color: #f1f5f9;
+  }
+
+  .page-subtitle,
+  .stat-label {
+    color: #94a3b8;
+  }
+
+  .stat-number {
+    color: #f1f5f9;
   }
 }
 </style>
